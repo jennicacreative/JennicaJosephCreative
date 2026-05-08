@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bio — Jennica Joseph Creative</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink: #d76481;
+      --grey: #5a5a5a;
+      --grey-light: #9a9a9a;
+      --grey-rule: #e2e2e2;
+      --white: #ffffff;
+      --off-white: #f9f7f8;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: var(--white);
+      color: var(--grey);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 52px;
+      border-bottom: 1px solid var(--grey-rule);
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      z-index: 100;
+    }
+
+    .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
+    .logo-link img { height: 72px; width: auto; display: block; }
+
+    nav { display: flex; align-items: center; gap: 48px; }
+
+    nav a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--grey);
+      position: relative;
+      padding-bottom: 4px;
+      transition: color 0.2s;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 1px;
+      background: var(--pink);
+    }
+
+    nav a:hover { color: var(--pink); }
+    nav a.active { color: var(--pink); }
+
+    /* ── BIO SECTION ── */
+    .bio-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 113px);
+      padding: 72px 52px;
+      background: var(--off-white);
+    }
+
+    .bio-inner {
+      display: flex;
+      align-items: center;
+      gap: 80px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    /* ── PHOTO ── */
+    .bio-photo-wrap {
+      flex-shrink: 0;
+      width: 340px;
+    }
+
+    .bio-photo-frame {
+      position: relative;
+      width: 340px;
+      height: 420px;
+    }
+
+    .bio-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    /* ── TEXT ── */
+    .bio-text {
+      flex: 1;
+    }
+
+    .bio-text p {
+      font-size: 1.08rem;
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--pink);
+      letter-spacing: 0.01em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .bio-inner {
+        flex-direction: column;
+        gap: 48px;
+        align-items: center;
+        text-align: center;
+      }
+
+      .bio-photo-wrap,
+      .bio-photo-frame {
+        width: 260px;
+        height: 320px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header { padding: 14px 20px; }
+      nav { gap: 24px; }
+      .logo-link img { height: 52px; }
+      .bio-section { padding: 40px 24px; }
+      .bio-text p { font-size: 0.95rem; }
+    }
+  
+    .nav-instagram { text-decoration: none;
+      display: flex;
+      align-items: center;
+      color: var(--pink);
+      line-height: 0;
+      transition: opacity 0.2s;
+    }
+    .nav-instagram:hover { opacity: 0.7; }
+    .nav-instagram::after { display: none; }
+    .nav-instagram svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo-link" aria-label="Jennica Joseph Creative — Home">
+      <img src="Logo_PINKside.svg" alt="Jennica Joseph Creative" />
+    </a>
+    <nav>
+      <a href="bio.html" class="active">Bio</a>
+      <a href="resume.html">Resume</a>
+      <a href="contact.html">Contact</a>
+      <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg></a>
+    </nav>
+  </header>
+
+  <section class="bio-section">
+    <div class="bio-inner">
+
+      <div class="bio-photo-wrap">
+        <div class="bio-photo-frame">
+          <img src="images/bio-photo.jpg" alt="Jennica Joseph" />
+        </div>
+      </div>
+
+      <div class="bio-text">
+        <p>Hi I'm Jennica! I'm a graphic designer, former showgirl &amp; part-time clown based in Las Vegas. I studied graphic design at College of Southern Nevada &amp; have a particular interest in print work. You can see my work in ADDY Magazine 2025 where I was a designer for the magazine as well as having my work featured as an American Advertising Award winner. My creative journey brought me to Las Vegas to sing in the legendary show Jubilee! &amp; now when I'm not designing you can find me on stage at Atomic Saloon Show where I understudy four characters.</p>
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>
