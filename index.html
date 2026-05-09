@@ -220,28 +220,39 @@
     /* ── PAGE JUMP ── */
     .page-jump {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
-      margin-top: 18px;
+      gap: 5px;
+      margin-top: 10px;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+
+    .page-jump:hover, .page-jump:focus-within { opacity: 1; }
+
+    .page-jump-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .page-jump label {
-      font-size: 0.65rem;
-      font-weight: 500;
-      letter-spacing: 0.22em;
+      font-size: 0.48rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--grey-light);
     }
 
     .page-jump input {
       font-family: 'Raleway', sans-serif;
-      font-size: 0.82rem;
+      font-size: 0.65rem;
       font-weight: 300;
       color: var(--grey);
       border: 1px solid var(--grey-rule);
       background: var(--white);
-      padding: 6px 10px;
-      width: 60px;
+      padding: 3px 6px;
+      width: 42px;
       text-align: center;
       outline: none;
       transition: border-color 0.2s;
@@ -259,11 +270,11 @@
       border: 1px solid var(--pink);
       color: var(--pink);
       font-family: 'Raleway', sans-serif;
-      font-size: 0.65rem;
+      font-size: 0.48rem;
       font-weight: 500;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      padding: 7px 18px;
+      padding: 4px 10px;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
@@ -271,10 +282,10 @@
     .page-jump button:hover { background: var(--pink); color: var(--white); }
 
     .page-jump-error {
-      font-size: 0.68rem;
+      font-size: 0.58rem;
       color: var(--pink);
       letter-spacing: 0.1em;
-      margin-top: 6px;
+      margin-top: 4px;
       min-height: 1em;
       text-align: center;
     }
@@ -327,15 +338,17 @@
       <!-- Page Jump -->
       <div class="page-jump">
         <label for="pageJumpInput">Go to page</label>
-        <input
-          type="number"
-          id="pageJumpInput"
-          min="1"
-          max="42"
-          placeholder="—"
-          aria-label="Enter page number"
-        />
-        <button id="pageJumpBtn">Go</button>
+        <div class="page-jump-row">
+          <input
+            type="number"
+            id="pageJumpInput"
+            min="1"
+            max="42"
+            placeholder="—"
+            aria-label="Enter page number"
+          />
+          <button id="pageJumpBtn">Go</button>
+        </div>
       </div>
       <div class="page-jump-error" id="pageJumpError" aria-live="polite"></div>
 
