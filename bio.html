@@ -40,7 +40,7 @@
     }
 
     .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
-    .logo-link img { height: 96px; width: auto; display: block; }
+    .logo-link img { height: 96px; width: auto; display: block; } /* matches index.html */
 
     nav { display: flex; align-items: center; gap: 48px; }
 
@@ -67,12 +67,32 @@
     nav a:hover { color: var(--pink); }
     nav a.active { color: var(--pink); }
 
+    .nav-instagram {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      color: var(--pink);
+      line-height: 0;
+      transition: opacity 0.2s;
+    }
+    .nav-instagram:hover { opacity: 0.7; }
+    .nav-instagram::after { display: none; }
+    .nav-instagram svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     /* ── BIO SECTION ── */
     .bio-section {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: calc(100vh - 113px);
+      min-height: calc(100vh - 137px); /* updated for taller header */
       padding: 72px 52px;
       background: var(--off-white);
     }
@@ -133,28 +153,9 @@
     @media (max-width: 640px) {
       header { padding: 14px 20px; }
       nav { gap: 24px; }
-      .logo-link img { height: 52px; }
+      .logo-link img { height: 68px; } /* matches index.html mobile size */
       .bio-section { padding: 40px 24px; }
       .bio-text p { font-size: 0.95rem; }
-    }
-  
-    .nav-instagram { text-decoration: none;
-      display: flex;
-      align-items: center;
-      color: var(--pink);
-      line-height: 0;
-      transition: opacity 0.2s;
-    }
-    .nav-instagram:hover { opacity: 0.7; }
-    .nav-instagram::after { display: none; }
-    .nav-instagram svg {
-      width: 15px;
-      height: 15px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
     }
   </style>
 </head>
@@ -168,7 +169,9 @@
       <a href="bio.html" class="active">Bio</a>
       <a href="resume.html">Resume</a>
       <a href="contact.html">Contact</a>
-      <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg></a>
+      <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+      </a>
     </nav>
   </header>
 
