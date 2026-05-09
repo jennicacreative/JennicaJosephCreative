@@ -40,7 +40,7 @@
     }
 
     .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
-    .logo-link img { height: 96px; width: auto; display: block; } 
+    .logo-link img { height: 96px; width: auto; display: block; }
 
     nav { display: flex; align-items: center; gap: 48px; }
 
@@ -63,6 +63,138 @@
       width: 100%; height: 1px;
       background: var(--pink);
     }
+
+    nav a:hover { color: var(--pink); }
+    nav a.active { color: var(--pink); }
+
+    .nav-instagram {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      color: var(--pink);
+      line-height: 0;
+      transition: opacity 0.2s;
+    }
+    .nav-instagram:hover { opacity: 0.7; }
+    .nav-instagram::after { display: none; }
+    .nav-instagram svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── BODY ── */
+    .bio-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 137px);
+      padding: 72px 52px;
+      background: var(--off-white);
+    }
+
+    .bio-inner {
+      display: flex;
+      align-items: flex-start;  /* CHANGED from center */
+      gap: 80px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .bio-photo-wrap {
+      flex-shrink: 0;
+      width: 340px;
+    }
+
+    .bio-photo-frame {
+      position: relative;
+      width: 340px;
+    }
+
+    .bio-photo-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .bio-text {
+      flex: 1;
+      padding-top: 80px;  /* ADDED */
+    }
+
+    .bio-text p {
+      font-size: 1.08rem;
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--pink);
+      letter-spacing: 0.01em;
+    }
+
+    @media (max-width: 860px) {
+      .bio-inner {
+        flex-direction: column;
+        gap: 48px;
+        align-items: center;
+        text-align: center;
+      }
+
+      .bio-photo-wrap,
+      .bio-photo-frame {
+        width: 260px;
+      }
+
+      .bio-text {
+        padding-top: 0;  /* ADDED — resets padding on mobile */
+      }
+    }
+
+    @media (max-width: 640px) {
+      header { padding: 14px 20px; }
+      nav { gap: 24px; }
+      .logo-link img { height: 68px; }
+      .bio-section { padding: 40px 24px; }
+      .bio-text p { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo-link" aria-label="Jennica Joseph Creative — Home">
+      <img src="Logo.svg" alt="Jennica Joseph Creative" />
+    </a>
+    <nav>
+      <a href="bio.html" class="active">Bio</a>
+      <a href="resume.html">Resume</a>
+      <a href="contact.html">Contact</a>
+      <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+      </a>
+    </nav>
+  </header>
+
+  <section class="bio-section">
+    <div class="bio-inner">
+
+      <div class="bio-photo-wrap">
+        <div class="bio-photo-frame">
+          <img src="Headshot.svg" alt="Jennica Joseph" />
+        </div>
+      </div>
+
+      <div class="bio-text">
+        <p>Hi I'm Jennica! I'm a graphic designer, former showgirl &amp; part-time clown based in Las Vegas. I studied graphic design at College of Southern Nevada &amp; have a particular interest in print work. You can see my work in ADDY Magazine 2025 where I was a designer for the magazine as well as having my work featured as an American Advertising Award winner. My creative journey brought me to Las Vegas to sing in the legendary show <em>Jubilee!</em> &amp; now when I'm not designing you can find me on stage at <em>Atomic Saloon Show</em> where I understudy four characters.</p>
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>    }
 
     nav a:hover { color: var(--pink); }
     nav a.active { color: var(--pink); }
