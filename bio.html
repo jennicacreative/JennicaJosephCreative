@@ -40,7 +40,27 @@
     }
 
     .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
-    .logo-link img { height: 96px; wid      width: 100%; height: 1px;
+    .logo-link img { height: 96px; width: auto; display: block; }
+
+    nav { display: flex; align-items: center; gap: 48px; }
+
+    nav a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--grey);
+      position: relative;
+      padding-bottom: 4px;
+      transition: color 0.2s;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 1px;
       background: var(--pink);
     }
 
@@ -79,7 +99,7 @@
 
     .bio-inner {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       gap: 80px;
       max-width: 1100px;
       width: 100%;
@@ -103,7 +123,6 @@
 
     .bio-text {
       flex: 1;
-      padding-bottom: 80px;
     }
 
     .bio-text p {
@@ -125,10 +144,6 @@
       .bio-photo-wrap,
       .bio-photo-frame {
         width: 260px;
-      }
-
-      .bio-text {
-        padding-bottom: 0;
       }
     }
 
