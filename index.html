@@ -40,7 +40,7 @@
     }
 
     .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
-    .logo-link img { height: 72px; width: auto; display: block; }
+    .logo-link img { height: 96px; width: auto; display: block; } /* ← increased from 72px */
 
     nav { display: flex; align-items: center; gap: 48px; }
 
@@ -66,7 +66,8 @@
 
     nav a:hover, nav a.active { color: var(--pink); }
 
-    .nav-instagram { text-decoration: none;
+    .nav-instagram {
+      text-decoration: none;
       display: flex;
       align-items: center;
       color: var(--pink);
@@ -93,7 +94,7 @@
       justify-content: center;
       padding: 52px 40px 60px;
       background: var(--off-white);
-      min-height: calc(100vh - 113px);
+      min-height: calc(100vh - 137px); /* adjusted for taller header */
     }
 
     /* ── BOOK WRAPPER ── */
@@ -216,10 +217,72 @@
       letter-spacing: 0.12em;
     }
 
+    /* ── PAGE JUMP ── */
+    .page-jump {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .page-jump label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--grey-light);
+    }
+
+    .page-jump input {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--grey);
+      border: 1px solid var(--grey-rule);
+      background: var(--white);
+      padding: 6px 10px;
+      width: 60px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .page-jump input:focus { border-color: var(--pink); }
+
+    /* hide number spinners */
+    .page-jump input::-webkit-inner-spin-button,
+    .page-jump input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .page-jump input[type=number] { -moz-appearance: textfield; }
+
+    .page-jump button {
+      background: none;
+      border: 1px solid var(--pink);
+      color: var(--pink);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 7px 18px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .page-jump button:hover { background: var(--pink); color: var(--white); }
+
+    .page-jump-error {
+      font-size: 0.68rem;
+      color: var(--pink);
+      letter-spacing: 0.1em;
+      margin-top: 6px;
+      min-height: 1em;
+      text-align: center;
+    }
+
     @media (max-width: 640px) {
       header { padding: 14px 20px; }
       nav { gap: 24px; }
-      .logo-link img { height: 52px; }
+      .logo-link img { height: 68px; } /* slightly larger on mobile too */
       .flipbook-section { padding: 20px 8px 36px; }
     }
   </style>
@@ -260,6 +323,21 @@
         <span class="page-counter" id="pageCounter"></span>
         <button class="flip-btn" id="nextBtn">Next →</button>
       </div>
+
+      <!-- Page Jump -->
+      <div class="page-jump">
+        <label for="pageJumpInput">Go to page</label>
+        <input
+          type="number"
+          id="pageJumpInput"
+          min="1"
+          max="42"
+          placeholder="—"
+          aria-label="Enter page number"
+        />
+        <button id="pageJumpBtn">Go</button>
+      </div>
+      <div class="page-jump-error" id="pageJumpError" aria-live="polite"></div>
 
     </div>
   </section>
@@ -319,14 +397,17 @@
     let current   = 0;
     let animating = false;
 
-    const spreadInner = document.getElementById('spreadInner');
-    const imgLeft     = document.getElementById('imgLeft');
-    const imgRight    = document.getElementById('imgRight');
-    const prevBtn     = document.getElementById('prevBtn');
-    const nextBtn     = document.getElementById('nextBtn');
-    const counter     = document.getElementById('pageCounter');
+    const spreadInner  = document.getElementById('spreadInner');
+    const imgLeft      = document.getElementById('imgLeft');
+    const imgRight     = document.getElementById('imgRight');
+    const prevBtn      = document.getElementById('prevBtn');
+    const nextBtn      = document.getElementById('nextBtn');
+    const counter      = document.getElementById('pageCounter');
+    const jumpInput    = document.getElementById('pageJumpInput');
+    const jumpBtn      = document.getElementById('pageJumpBtn');
+    const jumpError    = document.getElementById('pageJumpError');
 
-    function showSpread(index) {
+    function showSpread(index, animate) {
       const [l, r] = spreads[index];
       imgLeft.src  = l || '';
       imgRight.src = r || '';
@@ -342,7 +423,7 @@
 
     function flip(direction) {
       if (animating) return;
-      if (direction === 'forward' && current >= totalSpreads - 1) return;
+      if (direction === 'forward'  && current >= totalSpreads - 1) return;
       if (direction === 'backward' && current <= 0) return;
 
       animating = true;
@@ -366,10 +447,59 @@
       }, 720);
     }
 
+    function jumpToPage() {
+      const raw = parseInt(jumpInput.value, 10);
+      jumpError.textContent = '';
+
+      if (isNaN(raw) || raw < 1 || raw > PAGES.length) {
+        jumpError.textContent = 'Please enter a page number between 1 and ' + PAGES.length + '.';
+        jumpInput.focus();
+        return;
+      }
+
+      // Convert page number → spread index (0-based)
+      const targetSpread = Math.floor((raw - 1) / 2);
+
+      if (targetSpread === current) {
+        jumpInput.value = '';
+        return; // already there
+      }
+
+      const direction = targetSpread > current ? 'forward' : 'backward';
+
+      if (animating) return;
+      animating = true;
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+
+      spreadInner.classList.add(direction === 'forward' ? 'flip-forward' : 'flip-backward');
+
+      setTimeout(() => {
+        current = targetSpread;
+        showSpread(current);
+      }, 350);
+
+      setTimeout(() => {
+        spreadInner.classList.remove('flip-forward');
+        spreadInner.classList.remove('flip-backward');
+        animating = false;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === totalSpreads - 1;
+      }, 720);
+
+      jumpInput.value = '';
+    }
+
     nextBtn.addEventListener('click', () => flip('forward'));
     prevBtn.addEventListener('click', () => flip('backward'));
 
+    jumpBtn.addEventListener('click', jumpToPage);
+    jumpInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') jumpToPage();
+    });
+
     document.addEventListener('keydown', (e) => {
+      if (document.activeElement === jumpInput) return; // don't steal from the input
       if (e.key === 'ArrowRight') flip('forward');
       if (e.key === 'ArrowLeft')  flip('backward');
     });
