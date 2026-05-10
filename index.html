@@ -425,54 +425,7 @@
       text-align: center;
     }
 
-    /* Inline page jump */
-    .ls-jump {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .ls-jump input {
-      font-family: 'Raleway', sans-serif;
-      font-size: 0.58rem;
-      font-weight: 300;
-      color: #fff;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.38);
-      padding: 3px 6px;
-      width: 36px;
-      text-align: center;
-      outline: none;
-      border-radius: 3px;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      transition: border-color 0.2s;
-    }
-    .ls-jump input::placeholder { color: rgba(255,255,255,0.38); }
-    .ls-jump input:focus { border-color: var(--pink); }
-    .ls-jump input::-webkit-inner-spin-button,
-    .ls-jump input::-webkit-outer-spin-button { -webkit-appearance: none; }
-    .ls-jump input[type=number] { -moz-appearance: textfield; }
 
-    .ls-jump button {
-      font-family: 'Raleway', sans-serif;
-      font-size: 0.48rem;
-      font-weight: 500;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.8);
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.38);
-      padding: 3px 8px;
-      border-radius: 3px;
-      cursor: pointer;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .ls-jump button:hover {
-      background: rgba(215,100,129,0.6);
-      border-color: var(--pink);
-    }
 
     /* Tap hint */
     #ls-tap-hint {
@@ -556,10 +509,6 @@
       <svg viewBox="0 0 12 12"><polyline points="8,2 4,6 8,10"/></svg>
     </button>
     <span id="ls-counter"></span>
-    <div class="ls-jump">
-      <input type="number" id="ls-jumpInput" min="1" max="42" placeholder="pg" aria-label="Go to page" />
-      <button id="ls-jumpBtn">Go</button>
-    </div>
     <button class="ls-btn" id="ls-nextBtn" aria-label="Next">
       <svg viewBox="0 0 12 12"><polyline points="4,2 8,6 4,10"/></svg>
     </button>
@@ -609,8 +558,7 @@
     const lsPrevBtn   = document.getElementById('ls-prevBtn');
     const lsNextBtn   = document.getElementById('ls-nextBtn');
     const lsCounter   = document.getElementById('ls-counter');
-    const lsJumpInput = document.getElementById('ls-jumpInput');
-    const lsJumpBtn   = document.getElementById('ls-jumpBtn');
+
     const lsTapHint   = document.getElementById('ls-tap-hint');
 
     function isLandscapeMobile() {
@@ -789,8 +737,6 @@
 
     lsPrevBtn.addEventListener('click', () => { showControls(); flip('backward'); });
     lsNextBtn.addEventListener('click', () => { showControls(); flip('forward'); });
-    lsJumpBtn.addEventListener('click', () => { jumpToPage(lsJumpInput, null); });
-    lsJumpInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') jumpToPage(lsJumpInput, null); });
 
     document.addEventListener('keydown', (e) => {
       if (document.activeElement === jumpInput || document.activeElement === lsJumpInput) return;
