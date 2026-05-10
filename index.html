@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Jennica Joseph Creative</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,13 +19,15 @@
       --off-white: #f9f7f8;
     }
 
-    html, body { height: 100%; }
+    html { height: -webkit-fill-available; }
 
     body {
       font-family: 'Raleway', sans-serif;
       background: var(--off-white);
       color: var(--grey);
       min-height: 100vh;
+      min-height: -webkit-fill-available;
+      min-height: 100dvh;
     }
 
     /* ── HEADER — not sticky ── */
@@ -89,6 +91,7 @@
       padding: 52px 40px 60px;
       background: var(--off-white);
       min-height: calc(100vh - 137px);
+      min-height: calc(100dvh - 137px);
     }
 
     .book-wrapper {
@@ -324,7 +327,9 @@
     #landscape-spread {
       position: relative;
       width: 100vw;
+      width: 100dvw;
       height: 100vh;
+      height: 100dvh;
       display: flex;
       perspective: 2400px;
       overflow: hidden;
@@ -565,7 +570,10 @@
     const lsTapHint   = document.getElementById('ls-tap-hint');
 
     function isLandscapeMobile() {
-      return window.innerHeight <= 600 && window.innerWidth > window.innerHeight;
+      // visualViewport gives the actual visible area in Safari (excludes browser chrome)
+      const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      const vvw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
+      return vvh <= 600 && vvw > vvh;
     }
 
     function showSpread(index) {
@@ -736,6 +744,9 @@
 
     window.addEventListener('resize', applyLayout);
     window.addEventListener('orientationchange', () => setTimeout(applyLayout, 150));
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', applyLayout);
+    }
 
     showSpread(0);
     applyLayout();
