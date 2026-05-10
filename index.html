@@ -37,10 +37,18 @@
       top: 0;
       background: var(--white);
       z-index: 100;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* Header hidden in landscape fullscreen */
+    body.fs-landscape header {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
     }
 
     .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
-    .logo-link img { height: 96px; width: auto; display: block; } 
+    .logo-link img { height: 96px; width: auto; display: block; }
 
     nav { display: flex; align-items: center; gap: 48px; }
 
@@ -94,10 +102,16 @@
       justify-content: center;
       padding: 52px 40px 60px;
       background: var(--off-white);
-      min-height: calc(100vh - 137px); 
+      min-height: calc(100vh - 137px);
+      transition: min-height 0.3s ease, padding 0.3s ease;
     }
 
-    
+    /* When header is hidden, section fills full viewport */
+    body.fs-landscape .flipbook-section {
+      min-height: 100vh;
+      padding: 12px 8px;
+    }
+
     .book-wrapper {
       width: min(1200px, 94vw);
       display: flex;
@@ -105,7 +119,6 @@
       align-items: center;
     }
 
-   
     .spread {
       width: 100%;
       display: flex;
@@ -146,7 +159,6 @@
       pointer-events: none;
     }
 
-    
     .spread {
       transform-style: preserve-3d;
       perspective: 2400px;
@@ -182,7 +194,7 @@
       100% { transform: rotateY(0deg) scaleX(1); opacity: 1; }
     }
 
-   
+    /* ── CONTROLS ── */
     .flipbook-controls {
       display: flex;
       align-items: center;
@@ -260,7 +272,6 @@
 
     .page-jump input:focus { border-color: var(--pink); }
 
-    
     .page-jump input::-webkit-inner-spin-button,
     .page-jump input::-webkit-outer-spin-button { -webkit-appearance: none; }
     .page-jump input[type=number] { -moz-appearance: textfield; }
@@ -290,11 +301,118 @@
       text-align: center;
     }
 
+    /* ── FULLSCREEN BUTTON (mobile only) ── */
+    .fs-btn {
+      display: none; /* hidden on desktop */
+      position: fixed;
+      z-index: 200;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--pink);
+      color: var(--pink);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: background 0.2s, color 0.2s;
+      padding: 0;
+      /* positioned bottom-right */
+      bottom: 16px;
+      right: 16px;
+    }
+
+    .fs-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+
+    .fs-btn:hover { background: var(--pink); color: var(--white); }
+
+    /* Show on mobile */
+    @media (max-width: 768px) {
+      .fs-btn { display: flex; }
+    }
+
+    /* ── LANDSCAPE FULLSCREEN MODE ── */
+    @media (orientation: landscape) and (max-height: 600px) {
+
+      /* Auto-apply fs-landscape on small landscape screens */
+      body:not(.fs-off) header {
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      body:not(.fs-off) .flipbook-section {
+        min-height: 100vh;
+        padding: 6px 8px;
+      }
+
+      body:not(.fs-off) .flipbook-controls {
+        margin-top: 8px;
+        gap: 14px;
+      }
+
+      body:not(.fs-off) .flip-btn {
+        padding: 6px 16px;
+        font-size: 0.58rem;
+      }
+
+      body:not(.fs-off) .page-counter {
+        font-size: 0.7rem;
+      }
+
+      body:not(.fs-off) .page-jump {
+        margin-top: 4px;
+      }
+
+      /* Move fs-btn to top-right in landscape so it's reachable */
+      .fs-btn {
+        bottom: auto;
+        top: 10px;
+        right: 12px;
+      }
+    }
+
+    /* ── PORTRAIT MOBILE ── */
     @media (max-width: 640px) {
       header { padding: 14px 20px; }
       nav { gap: 24px; }
-      .logo-link img { height: 68px; } 
+      .logo-link img { height: 68px; }
       .flipbook-section { padding: 20px 8px 36px; }
+    }
+
+    /* ── NATIVE FULLSCREEN (when supported) ── */
+    :fullscreen .fs-btn,
+    :-webkit-full-screen .fs-btn {
+      top: 10px;
+      bottom: auto;
+    }
+
+    :fullscreen body,
+    :-webkit-full-screen body {
+      background: var(--off-white);
+    }
+
+    :fullscreen header,
+    :-webkit-full-screen header {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    :fullscreen .flipbook-section,
+    :-webkit-full-screen .flipbook-section {
+      min-height: 100vh;
+      padding: 12px 8px;
     }
   </style>
 </head>
@@ -335,7 +453,6 @@
         <button class="flip-btn" id="nextBtn">Next →</button>
       </div>
 
-      
       <div class="page-jump">
         <label for="pageJumpInput">Go to page</label>
         <div class="page-jump-row">
@@ -354,6 +471,24 @@
 
     </div>
   </section>
+
+  <!-- Fullscreen toggle button (mobile only) -->
+  <button class="fs-btn" id="fsBtn" aria-label="Toggle fullscreen">
+    <!-- expand icon (default) -->
+    <svg id="fsIconExpand" viewBox="0 0 24 24">
+      <polyline points="15 3 21 3 21 9"/>
+      <polyline points="9 21 3 21 3 15"/>
+      <line x1="21" y1="3" x2="14" y2="10"/>
+      <line x1="3" y1="21" x2="10" y2="14"/>
+    </svg>
+    <!-- collapse icon (shown in fullscreen) -->
+    <svg id="fsIconCollapse" viewBox="0 0 24 24" style="display:none">
+      <polyline points="4 14 10 14 10 20"/>
+      <polyline points="20 10 14 10 14 4"/>
+      <line x1="10" y1="14" x2="3" y2="21"/>
+      <line x1="21" y1="3" x2="14" y2="10"/>
+    </svg>
+  </button>
 
   <script>
     const PAGES = [
@@ -419,6 +554,9 @@
     const jumpInput    = document.getElementById('pageJumpInput');
     const jumpBtn      = document.getElementById('pageJumpBtn');
     const jumpError    = document.getElementById('pageJumpError');
+    const fsBtn        = document.getElementById('fsBtn');
+    const fsIconExpand = document.getElementById('fsIconExpand');
+    const fsIconCollapse = document.getElementById('fsIconCollapse');
 
     function showSpread(index, animate) {
       const [l, r] = spreads[index];
@@ -470,12 +608,11 @@
         return;
       }
 
-      // Convert page number → spread index (0-based)
       const targetSpread = Math.floor((raw - 1) / 2);
 
       if (targetSpread === current) {
         jumpInput.value = '';
-        return; // already there
+        return;
       }
 
       const direction = targetSpread > current ? 'forward' : 'backward';
@@ -505,16 +642,92 @@
 
     nextBtn.addEventListener('click', () => flip('forward'));
     prevBtn.addEventListener('click', () => flip('backward'));
-
     jumpBtn.addEventListener('click', jumpToPage);
     jumpInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') jumpToPage();
     });
 
     document.addEventListener('keydown', (e) => {
-      if (document.activeElement === jumpInput) return; // don't steal from the input
+      if (document.activeElement === jumpInput) return;
       if (e.key === 'ArrowRight') flip('forward');
       if (e.key === 'ArrowLeft')  flip('backward');
+    });
+
+    /* ── FULLSCREEN LOGIC ── */
+    let isFsActive = false;
+
+    function setFsIcons(active) {
+      fsIconExpand.style.display   = active ? 'none'  : 'block';
+      fsIconCollapse.style.display = active ? 'block' : 'none';
+    }
+
+    function enterFs() {
+      // Try native Fullscreen API first
+      const el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => cssFs(true));
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else {
+        cssFs(true);
+      }
+    }
+
+    function exitFs() {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      } else {
+        cssFs(false);
+      }
+    }
+
+    // CSS-only fallback (for browsers/iOS that block fullscreen API)
+    function cssFs(on) {
+      isFsActive = on;
+      document.body.classList.toggle('fs-landscape', on);
+      document.body.classList.toggle('fs-off', !on);
+      setFsIcons(on);
+    }
+
+    fsBtn.addEventListener('click', () => {
+      const inNativeFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      if (inNativeFs || isFsActive) {
+        exitFs();
+      } else {
+        enterFs();
+      }
+    });
+
+    // Sync icon with native fullscreen state changes
+    document.addEventListener('fullscreenchange', () => {
+      const active = !!document.fullscreenElement;
+      isFsActive = active;
+      setFsIcons(active);
+      if (!active) {
+        document.body.classList.remove('fs-landscape');
+        document.body.classList.remove('fs-off');
+      }
+    });
+
+    document.addEventListener('webkitfullscreenchange', () => {
+      const active = !!document.webkitFullscreenElement;
+      isFsActive = active;
+      setFsIcons(active);
+      if (!active) {
+        document.body.classList.remove('fs-landscape');
+        document.body.classList.remove('fs-off');
+      }
+    });
+
+    // Auto-collapse controls in landscape to save space (CSS handles the visuals,
+    // this just ensures the body class is clean on orientation change)
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        // If user manually turned off fs, respect that; otherwise auto-mode via CSS
+        if (!isFsActive && !document.body.classList.contains('fs-off')) {
+          document.body.classList.remove('fs-landscape');
+        }
+      }, 300);
     });
 
     showSpread(0);
