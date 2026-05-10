@@ -26,21 +26,19 @@
       min-height: 100vh;
     }
 
-    /* ── HEADER ── */
+    /* ── HEADER — NOT sticky ── */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 20px 52px;
       border-bottom: 1px solid var(--grey-rule);
-      position: sticky;
-      top: 0;
       background: var(--white);
-      z-index: 100;
+      /* no position:sticky */
     }
 
     .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
-    .logo-link img { height: 96px; width: auto; display: block; } 
+    .logo-link img { height: 96px; width: auto; display: block; }
 
     nav { display: flex; align-items: center; gap: 48px; }
 
@@ -77,16 +75,13 @@
     .nav-instagram:hover { opacity: 0.7; }
     .nav-instagram::after { display: none; }
     .nav-instagram svg {
-      width: 15px;
-      height: 15px;
-      stroke: currentColor;
-      fill: none;
+      width: 15px; height: 15px;
+      stroke: currentColor; fill: none;
       stroke-width: 1.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      stroke-linecap: round; stroke-linejoin: round;
     }
 
-    /* ── BODY ── */
+    /* ── FLIPBOOK SECTION ── */
     .flipbook-section {
       display: flex;
       flex-direction: column;
@@ -94,10 +89,8 @@
       justify-content: center;
       padding: 52px 40px 60px;
       background: var(--off-white);
-      min-height: calc(100vh - 137px); 
     }
 
-    
     .book-wrapper {
       width: min(1200px, 94vw);
       display: flex;
@@ -105,13 +98,21 @@
       align-items: center;
     }
 
-   
     .spread {
       width: 100%;
       display: flex;
       position: relative;
       background: var(--white);
       box-shadow: 0 12px 48px rgba(0,0,0,0.13);
+      perspective: 2400px;
+    }
+
+    .spread-inner {
+      width: 100%;
+      display: flex;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+      transform-origin: center center;
     }
 
     .spread-page {
@@ -124,20 +125,16 @@
     }
 
     .spread-page img {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: contain;
       display: block;
     }
 
-    /* Spine */
     .spine {
       position: absolute;
-      left: 50%;
-      top: 0;
+      left: 50%; top: 0;
       transform: translateX(-50%);
-      width: 4px;
-      height: 100%;
+      width: 4px; height: 100%;
       background: linear-gradient(to right,
         rgba(0,0,0,0.10),
         rgba(255,255,255,0.5),
@@ -146,24 +143,9 @@
       pointer-events: none;
     }
 
-    
-    .spread {
-      transform-style: preserve-3d;
-      perspective: 2400px;
-    }
-
-    .spread-inner {
-      width: 100%;
-      display: flex;
-      transform-style: preserve-3d;
-      transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
-      transform-origin: center center;
-    }
-
     .spread-inner.flip-forward {
       animation: turnForward 0.7s cubic-bezier(0.77, 0, 0.175, 1) forwards;
     }
-
     .spread-inner.flip-backward {
       animation: turnBackward 0.7s cubic-bezier(0.77, 0, 0.175, 1) forwards;
     }
@@ -174,7 +156,6 @@
       50%  { transform: rotateY(90deg) scaleX(0.05); opacity: 0.3; }
       100% { transform: rotateY(0deg) scaleX(1); opacity: 1; }
     }
-
     @keyframes turnBackward {
       0%   { transform: rotateY(0deg) scaleX(1); opacity: 1; }
       49%  { transform: rotateY(90deg) scaleX(0.05); opacity: 0.3; }
@@ -182,7 +163,7 @@
       100% { transform: rotateY(0deg) scaleX(1); opacity: 1; }
     }
 
-   
+    /* ── CONTROLS — desktop ── */
     .flipbook-controls {
       display: flex;
       align-items: center;
@@ -204,7 +185,6 @@
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
-
     .flip-btn:hover:not(:disabled) { background: var(--pink); color: var(--white); }
     .flip-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
@@ -227,7 +207,6 @@
       opacity: 0.65;
       transition: opacity 0.2s;
     }
-
     .page-jump:hover, .page-jump:focus-within { opacity: 1; }
 
     .page-jump-row {
@@ -257,10 +236,7 @@
       outline: none;
       transition: border-color 0.2s;
     }
-
     .page-jump input:focus { border-color: var(--pink); }
-
-    
     .page-jump input::-webkit-inner-spin-button,
     .page-jump input::-webkit-outer-spin-button { -webkit-appearance: none; }
     .page-jump input[type=number] { -moz-appearance: textfield; }
@@ -278,7 +254,6 @@
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
-
     .page-jump button:hover { background: var(--pink); color: var(--white); }
 
     .page-jump-error {
@@ -290,11 +265,160 @@
       text-align: center;
     }
 
+    /* ══════════════════════════════════════════
+       MOBILE  ≤ 640px
+    ══════════════════════════════════════════ */
     @media (max-width: 640px) {
-      header { padding: 14px 20px; }
-      nav { gap: 24px; }
-      .logo-link img { height: 68px; } 
-      .flipbook-section { padding: 20px 8px 36px; }
+      /* Compact header */
+      header {
+        padding: 10px 16px;
+      }
+      .logo-link img { height: 52px; }
+      nav { gap: 18px; }
+      nav a { font-size: 0.62rem; letter-spacing: 0.18em; }
+
+      /* Tighter flipbook padding */
+      .flipbook-section {
+        padding: 12px 6px 24px;
+      }
+      .book-wrapper { width: 100%; }
+
+      /* ── Mobile controls: slim pill buttons ── */
+      .flipbook-controls {
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .flip-btn {
+        /* Replace bulky rectangle with a small icon pill */
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-size: 0;           /* hide text */
+        letter-spacing: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-width: 1px;
+        flex-shrink: 0;
+      }
+
+      /* Re-inject arrow icons via pseudo-element on mobile */
+      #prevBtn::before {
+        content: '';
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-left: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
+        transform: rotate(45deg) translateX(1px);
+      }
+      #nextBtn::after {
+        content: '';
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-right: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
+        transform: rotate(-45deg) translateX(-1px);
+      }
+      /* Remove the text arrows */
+      #prevBtn, #nextBtn { position: relative; }
+
+      .page-counter {
+        font-size: 0.7rem;
+        min-width: 80px;
+      }
+
+      /* Page jump — tighter */
+      .page-jump { margin-top: 8px; }
+      .page-jump label { font-size: 0.44rem; }
+      .page-jump input { font-size: 0.6rem; width: 38px; padding: 2px 5px; }
+      .page-jump button { font-size: 0.44rem; padding: 3px 8px; }
+    }
+
+    /* ══════════════════════════════════════════
+       LANDSCAPE MOBILE  (short + wide)
+       This is the critical "horizontal flip" case
+    ══════════════════════════════════════════ */
+    @media (max-height: 500px) and (orientation: landscape) {
+      /* Header collapses to a thin bar */
+      header {
+        padding: 6px 16px;
+        border-bottom: 1px solid var(--grey-rule);
+      }
+      .logo-link img { height: 36px; }
+      nav { gap: 16px; }
+      nav a { font-size: 0.58rem; letter-spacing: 0.14em; }
+      .nav-instagram svg { width: 13px; height: 13px; }
+
+      /* Section: use almost all remaining vertical space */
+      .flipbook-section {
+        padding: 8px 6px 10px;
+        min-height: unset;
+      }
+
+      /* Book fills the width, height is constrained by viewport */
+      .book-wrapper {
+        width: 100%;
+        flex-direction: row;      /* put controls beside the book */
+        align-items: center;
+        gap: 10px;
+      }
+
+      .spread {
+        flex: 1;
+        /* Cap height so it fits in landscape viewport */
+        max-height: calc(100vh - 58px - 28px); /* minus header & padding */
+      }
+
+      /* Controls column on the right */
+      .flipbook-controls {
+        flex-direction: column;
+        margin-top: 0;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+
+      .flip-btn {
+        padding: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        font-size: 0;
+        letter-spacing: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-width: 1px;
+      }
+
+      #prevBtn::before {
+        content: '';
+        display: block;
+        width: 7px; height: 7px;
+        border-left: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
+        transform: rotate(45deg) translateX(1px);
+      }
+      #nextBtn::after {
+        content: '';
+        display: block;
+        width: 7px; height: 7px;
+        border-right: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
+        transform: rotate(-45deg) translateX(-1px);
+      }
+
+      .page-counter {
+        font-size: 0.6rem;
+        min-width: 60px;
+        writing-mode: horizontal-tb;
+      }
+
+      /* Hide page jump in landscape to save space */
+      .page-jump, .page-jump-error { display: none; }
     }
   </style>
 </head>
@@ -309,7 +433,11 @@
       <a href="resume.html">Resume</a>
       <a href="contact.html">Contact</a>
       <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+        </svg>
       </a>
     </nav>
   </header>
@@ -335,7 +463,6 @@
         <button class="flip-btn" id="nextBtn">Next →</button>
       </div>
 
-      
       <div class="page-jump">
         <label for="pageJumpInput">Go to page</label>
         <div class="page-jump-row">
@@ -357,48 +484,17 @@
 
   <script>
     const PAGES = [
-      'images/Page1.jpg',
-      'images/Page2.jpg',
-      'images/Page3.jpg',
-      'images/Page4.jpg',
-      'images/Page5.jpg',
-      'images/Page6.jpg',
-      'images/Page7.jpg',
-      'images/Page8.jpg',
-      'images/Page9.jpg',
-      'images/Page10.jpg',
-      'images/Page11.jpg',
-      'images/Page12.jpg',
-      'images/Page13.jpg',
-      'images/Page14.jpg',
-      'images/Page15.jpg',
-      'images/Page16.jpg',
-      'images/Page17.jpg',
-      'images/Page18.jpg',
-      'images/Page19.jpg',
-      'images/Page20.jpg',
-      'images/Page21.jpg',
-      'images/Page22.jpg',
-      'images/Page23.jpg',
-      'images/Page24.jpg',
-      'images/Page25.jpg',
-      'images/Page26.jpg',
-      'images/Page27.jpg',
-      'images/Page28.jpg',
-      'images/Page29.jpg',
-      'images/Page30.jpg',
-      'images/Page31.jpg',
-      'images/Page32.jpg',
-      'images/Page33.jpg',
-      'images/Page34.jpg',
-      'images/Page35.jpg',
-      'images/Page36.jpg',
-      'images/Page37.jpg',
-      'images/Page38.jpg',
-      'images/Page39.jpg',
-      'images/Page40.jpg',
-      'images/Page41.jpg',
-      'images/Page42.jpg',
+      'images/Page1.jpg','images/Page2.jpg','images/Page3.jpg','images/Page4.jpg',
+      'images/Page5.jpg','images/Page6.jpg','images/Page7.jpg','images/Page8.jpg',
+      'images/Page9.jpg','images/Page10.jpg','images/Page11.jpg','images/Page12.jpg',
+      'images/Page13.jpg','images/Page14.jpg','images/Page15.jpg','images/Page16.jpg',
+      'images/Page17.jpg','images/Page18.jpg','images/Page19.jpg','images/Page20.jpg',
+      'images/Page21.jpg','images/Page22.jpg','images/Page23.jpg','images/Page24.jpg',
+      'images/Page25.jpg','images/Page26.jpg','images/Page27.jpg','images/Page28.jpg',
+      'images/Page29.jpg','images/Page30.jpg','images/Page31.jpg','images/Page32.jpg',
+      'images/Page33.jpg','images/Page34.jpg','images/Page35.jpg','images/Page36.jpg',
+      'images/Page37.jpg','images/Page38.jpg','images/Page39.jpg','images/Page40.jpg',
+      'images/Page41.jpg','images/Page42.jpg',
     ];
 
     const spreads = [];
@@ -410,17 +506,17 @@
     let current   = 0;
     let animating = false;
 
-    const spreadInner  = document.getElementById('spreadInner');
-    const imgLeft      = document.getElementById('imgLeft');
-    const imgRight     = document.getElementById('imgRight');
-    const prevBtn      = document.getElementById('prevBtn');
-    const nextBtn      = document.getElementById('nextBtn');
-    const counter      = document.getElementById('pageCounter');
-    const jumpInput    = document.getElementById('pageJumpInput');
-    const jumpBtn      = document.getElementById('pageJumpBtn');
-    const jumpError    = document.getElementById('pageJumpError');
+    const spreadInner = document.getElementById('spreadInner');
+    const imgLeft     = document.getElementById('imgLeft');
+    const imgRight    = document.getElementById('imgRight');
+    const prevBtn     = document.getElementById('prevBtn');
+    const nextBtn     = document.getElementById('nextBtn');
+    const counter     = document.getElementById('pageCounter');
+    const jumpInput   = document.getElementById('pageJumpInput');
+    const jumpBtn     = document.getElementById('pageJumpBtn');
+    const jumpError   = document.getElementById('pageJumpError');
 
-    function showSpread(index, animate) {
+    function showSpread(index) {
       const [l, r] = spreads[index];
       imgLeft.src  = l || '';
       imgRight.src = r || '';
@@ -470,17 +566,12 @@
         return;
       }
 
-      // Convert page number → spread index (0-based)
       const targetSpread = Math.floor((raw - 1) / 2);
-
-      if (targetSpread === current) {
-        jumpInput.value = '';
-        return; // already there
-      }
+      if (targetSpread === current) { jumpInput.value = ''; return; }
 
       const direction = targetSpread > current ? 'forward' : 'backward';
-
       if (animating) return;
+
       animating = true;
       prevBtn.disabled = true;
       nextBtn.disabled = true;
@@ -505,14 +596,11 @@
 
     nextBtn.addEventListener('click', () => flip('forward'));
     prevBtn.addEventListener('click', () => flip('backward'));
-
     jumpBtn.addEventListener('click', jumpToPage);
-    jumpInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') jumpToPage();
-    });
+    jumpInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') jumpToPage(); });
 
     document.addEventListener('keydown', (e) => {
-      if (document.activeElement === jumpInput) return; // don't steal from the input
+      if (document.activeElement === jumpInput) return;
       if (e.key === 'ArrowRight') flip('forward');
       if (e.key === 'ArrowLeft')  flip('backward');
     });
