@@ -413,10 +413,7 @@
 
         <!-- Shop Now button — page 31 (left page of spread 15) -->
         <div class="page-hotspot" id="shopBtn">
-          <a class="shop-now-btn" href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-            Shop Now
-          </a>
+          <a class="shop-now-btn" href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer">Shop Now</a>
         </div>
       </div>
 
@@ -451,10 +448,7 @@
       <div id="landscape-spine"></div>
 
       <div class="page-hotspot" id="ls-shopBtn">
-        <a class="shop-now-btn" href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          Shop Now
-        </a>
+        <a class="shop-now-btn" href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer">Shop Now</a>
       </div>
     </div>
   </div>
@@ -525,6 +519,22 @@
       return vvh <= 600 && vvw > vvh;
     }
 
+    // Preload images for adjacent spreads so they're in browser cache before flip
+    const preloadCache = new Set();
+    function preloadAdjacent(index) {
+      [-1, 1].forEach(offset => {
+        const adj = index + offset;
+        if (adj < 0 || adj >= totalSpreads) return;
+        spreads[adj].forEach(src => {
+          if (src && !preloadCache.has(src)) {
+            preloadCache.add(src);
+            const img = new Image();
+            img.src = src;
+          }
+        });
+      });
+    }
+
     function showSpread(index) {
       const [l, r] = spreads[index];
       imgLeft.src  = l || '';
@@ -550,6 +560,8 @@
       const onShopPage = index === SHOP_SPREAD;
       shopBtn.classList.toggle('visible', onShopPage);
       lsShopBtn.classList.toggle('visible', onShopPage);
+
+      preloadAdjacent(index);
     }
 
     function flip(direction) {
