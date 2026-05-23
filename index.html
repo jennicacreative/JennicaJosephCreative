@@ -38,17 +38,26 @@
       padding: 20px 52px;
       border-bottom: 1px solid var(--grey-rule);
       background: var(--white);
+      overflow: visible;
+      position: relative;
+      z-index: 100;
     }
-    .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
+    .logo-link { display: inline-block; text-decoration: none; line-height: 0; flex-shrink: 0; }
     .logo-link img { height: 96px; width: auto; display: block; }
 
-    nav { display: flex; align-items: center; gap: 48px; }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      overflow: visible;
+    }
     nav a {
       font-size: 0.72rem; font-weight: 500;
       letter-spacing: 0.24em; text-transform: uppercase;
       text-decoration: none; color: var(--grey);
       position: relative; padding-bottom: 4px;
       transition: color 0.2s;
+      white-space: nowrap;
     }
     nav a::after {
       content: ''; position: absolute;
@@ -58,11 +67,16 @@
     nav a:hover, nav a.active { color: var(--pink); }
 
     .nav-instagram {
-      text-decoration: none; display: flex; align-items: center;
-      color: var(--pink); line-height: 0; transition: opacity 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      color: var(--pink);
+      line-height: 0;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
     }
     .nav-instagram:hover { opacity: 0.7; }
-    .nav-instagram::after { display: none; }
+    .nav-instagram::after { display: none !important; }
     .nav-instagram svg {
       width: 15px; height: 15px; stroke: currentColor; fill: none;
       stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
@@ -71,7 +85,9 @@
     /* ── SHOP DROPDOWN ── */
     .nav-shop {
       position: relative;
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
     }
     .nav-shop-trigger {
       font-size: 0.72rem; font-weight: 500;
@@ -82,6 +98,7 @@
       display: flex; align-items: center; gap: 5px;
       cursor: pointer; background: none; border: none;
       font-family: 'Raleway', sans-serif;
+      white-space: nowrap;
     }
     .nav-shop-trigger::after {
       content: ''; position: absolute;
@@ -95,38 +112,38 @@
       transition: transform 0.2s; flex-shrink: 0;
       margin-bottom: 4px;
     }
-    .nav-shop:hover .nav-shop-trigger svg,
-    .nav-shop:focus-within .nav-shop-trigger svg { transform: rotate(180deg); }
+    .nav-shop.open .nav-shop-trigger svg,
+    .nav-shop:hover .nav-shop-trigger svg { transform: rotate(180deg); }
 
     .nav-shop-dropdown {
       position: absolute;
       top: calc(100% + 14px);
-      left: 50%; transform: translateX(-50%);
+      right: 0;
       background: var(--white);
       border: 1px solid var(--grey-rule);
-      min-width: 200px;
+      width: 220px;
       opacity: 0; visibility: hidden;
-      transform: translateX(-50%) translateY(-6px);
+      transform: translateY(-6px);
       transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-      z-index: 200;
+      z-index: 9999;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.10);
     }
-    .nav-shop:hover .nav-shop-dropdown,
-    .nav-shop:focus-within .nav-shop-dropdown {
+    .nav-shop.open .nav-shop-dropdown,
+    .nav-shop:hover .nav-shop-dropdown {
       opacity: 1; visibility: visible;
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0);
     }
     .nav-shop-dropdown a {
       display: block;
-      padding: 12px 18px;
+      padding: 14px 18px;
       font-size: 0.65rem; font-weight: 400;
-      letter-spacing: 0.18em; text-transform: uppercase;
+      letter-spacing: 0.15em; text-transform: uppercase;
       color: var(--grey); text-decoration: none;
       transition: color 0.15s, background 0.15s;
       white-space: normal;
-      position: relative;
-      line-height: 1.5;
+      line-height: 1.6;
     }
-    .nav-shop-dropdown a::after { display: none; }
+    .nav-shop-dropdown a::after { display: none !important; }
     .nav-shop-dropdown a:hover { color: var(--pink); background: var(--off-white); }
 
     /* ── FLIPBOOK SECTION ── */
@@ -160,107 +177,61 @@
       display: flex; align-items: center; justify-content: center;
       overflow: hidden; background: var(--white);
     }
-    .spread-page img {
-      width: 100%; height: 100%; object-fit: contain; display: block;
-    }
+    .spread-page img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
     /* ── TURNING LEAF ── */
     .turning-leaf {
-      position: absolute;
-      top: 0; bottom: 0;
+      position: absolute; top: 0; bottom: 0;
       width: 50%;
       transform-style: preserve-3d;
-      z-index: 5;
-      visibility: hidden;
+      z-index: 5; visibility: hidden;
     }
     .turning-leaf { left: 50%; transform-origin: left center; }
     .turning-leaf.left-leaf { left: 0; transform-origin: right center; }
 
     .leaf-face {
       position: absolute; inset: 0;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
       display: flex; align-items: center; justify-content: center;
       overflow: hidden; background: var(--white);
     }
     .leaf-face img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .leaf-back { transform: rotateY(180deg); }
 
-    /* ── PAGE SHEEN OVERLAYS ──
-       These sit above the page image and animate during the flip to simulate
-       light catching a turning page. All pointer-events: none so they don't
-       interfere with anything.
-    ── */
-
-    /* Sheen on the front face — sweeps left-to-right as page lifts */
     .leaf-front::after {
-      content: '';
-      position: absolute; inset: 0;
+      content: ''; position: absolute; inset: 0;
       pointer-events: none;
-      background: linear-gradient(
-        105deg,
-        transparent 30%,
-        rgba(255,255,255,0.55) 50%,
-        transparent 70%
-      );
-      opacity: 0;
-      transform: translateX(-100%);
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+      opacity: 0; transform: translateX(-100%);
     }
-
-    /* Dark edge on the turning side — thin strip that looks like the page edge */
     .leaf-front::before {
-      content: '';
-      position: absolute; top: 0; bottom: 0;
-      width: 14px;
-      pointer-events: none;
+      content: ''; position: absolute; top: 0; bottom: 0;
+      width: 14px; pointer-events: none;
       background: linear-gradient(to right, rgba(0,0,0,0.18), transparent);
-      opacity: 0;
-      right: 0;
+      opacity: 0; right: 0;
     }
-
-    /* Shadow wash on the back face — mimics the underside of a turned page */
     .leaf-back::after {
-      content: '';
-      position: absolute; inset: 0;
+      content: ''; position: absolute; inset: 0;
       pointer-events: none;
-      background: linear-gradient(
-        to right,
-        rgba(0,0,0,0.22) 0%,
-        rgba(0,0,0,0.06) 45%,
-        transparent 100%
-      );
+      background: linear-gradient(to right, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.06) 45%, transparent 100%);
       opacity: 0;
     }
 
-    /* Forward flip animations */
     @keyframes peelForward  { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
     @keyframes peelBackward { from { transform: rotateY(0deg); } to { transform: rotateY(180deg); } }
 
-    /* Sheen sweep — front face brightens then fades as page lifts away */
     @keyframes sheenForward {
       0%   { opacity: 0; transform: translateX(-100%); }
       25%  { opacity: 1; transform: translateX(-20%); }
       60%  { opacity: 0.7; transform: translateX(40%); }
       100% { opacity: 0; transform: translateX(150%); }
     }
-
-    /* Page edge darkens as it lifts (forward) */
     @keyframes edgeForward {
-      0%   { opacity: 0; }
-      15%  { opacity: 1; }
-      70%  { opacity: 0.6; }
-      100% { opacity: 0; }
+      0%   { opacity: 0; } 15% { opacity: 1; } 70% { opacity: 0.6; } 100% { opacity: 0; }
     }
-
-    /* Back-face shadow reveals as page turns over (forward) */
     @keyframes backShadowForward {
-      0%   { opacity: 0; }
-      50%  { opacity: 0; }
-      65%  { opacity: 1; }
-      100% { opacity: 0.4; }
+      0% { opacity: 0; } 50% { opacity: 0; } 65% { opacity: 1; } 100% { opacity: 0.4; }
     }
-
-    /* Reverse versions for backward flip */
     @keyframes sheenBackward {
       0%   { opacity: 0; transform: translateX(150%); }
       25%  { opacity: 1; transform: translateX(40%); }
@@ -268,61 +239,35 @@
       100% { opacity: 0; transform: translateX(-100%); }
     }
     @keyframes edgeBackward {
-      0%   { opacity: 0; right: auto; left: 0;
-             background: linear-gradient(to left, rgba(0,0,0,0.18), transparent); }
-      15%  { opacity: 1; }
-      70%  { opacity: 0.6; }
-      100% { opacity: 0; }
+      0%   { opacity: 0; right: auto; left: 0; background: linear-gradient(to left, rgba(0,0,0,0.18), transparent); }
+      15%  { opacity: 1; } 70% { opacity: 0.6; } 100% { opacity: 0; }
     }
     @keyframes backShadowBackward {
-      0%   { opacity: 0; }
-      50%  { opacity: 0; }
-      65%  { opacity: 1; }
-      100% { opacity: 0.4; }
+      0% { opacity: 0; } 50% { opacity: 0; } 65% { opacity: 1; } 100% { opacity: 0.4; }
     }
 
-    .turning-leaf.anim-forward {
-      animation: peelForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .turning-leaf.anim-forward .leaf-front::after {
-      animation: sheenForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .turning-leaf.anim-forward .leaf-front::before {
-      animation: edgeForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .turning-leaf.anim-forward .leaf-back::after {
-      animation: backShadowForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
+    .turning-leaf.anim-forward { animation: peelForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .turning-leaf.anim-forward .leaf-front::after { animation: sheenForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .turning-leaf.anim-forward .leaf-front::before { animation: edgeForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .turning-leaf.anim-forward .leaf-back::after { animation: backShadowForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
 
-    .turning-leaf.anim-backward {
-      animation: peelBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .turning-leaf.anim-backward .leaf-front::after {
-      animation: sheenBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .turning-leaf.anim-backward .leaf-front::before {
-      opacity: 0;
-    }
-    .turning-leaf.anim-backward .leaf-back::after {
-      animation: backShadowBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
+    .turning-leaf.anim-backward { animation: peelBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .turning-leaf.anim-backward .leaf-front::after { animation: sheenBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .turning-leaf.anim-backward .leaf-front::before { opacity: 0; }
+    .turning-leaf.anim-backward .leaf-back::after { animation: backShadowBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
 
-    /* Spine */
     .spine {
       position: absolute; left: 50%; top: 0;
       transform: translateX(-50%);
       width: 4px; height: 100%;
-      background: linear-gradient(to right,
-        rgba(0,0,0,0.10), rgba(255,255,255,0.5), rgba(0,0,0,0.07));
+      background: linear-gradient(to right, rgba(0,0,0,0.10), rgba(255,255,255,0.5), rgba(0,0,0,0.07));
       z-index: 10; pointer-events: none;
     }
 
     /* ── Shop Now overlay ── */
     .page-hotspot {
-      position: absolute;
-      z-index: 6;
-      pointer-events: none;
-      opacity: 0;
+      position: absolute; z-index: 6;
+      pointer-events: none; opacity: 0;
       transition: opacity 0.3s;
     }
     .page-hotspot.visible { pointer-events: auto; opacity: 1; }
@@ -344,10 +289,6 @@
       background: #c25470;
       box-shadow: 0 5px 20px rgba(215,100,129,0.52);
       transform: translateY(-1px);
-    }
-    .shop-now-btn svg {
-      width: 0.75em; height: 0.75em; stroke: currentColor; fill: none;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;
     }
 
     /* ── CONTROLS ── */
@@ -404,14 +345,37 @@
       margin-top: 4px; min-height: 1em; text-align: center;
     }
 
+    /* ── RESPONSIVE NAV ── */
+    @media (max-width: 860px) {
+      header { padding: 16px 28px; }
+      nav { gap: 28px; }
+    }
+
+    @media (max-width: 640px) {
+      header { padding: 12px 16px; }
+      .logo-link img { height: 60px; }
+      nav { gap: 16px; flex-wrap: nowrap; }
+      nav a { font-size: 0.60rem; letter-spacing: 0.14em; }
+      .nav-shop-trigger { font-size: 0.60rem; letter-spacing: 0.14em; }
+      .nav-shop-dropdown {
+        position: fixed;
+        right: 12px;
+        width: 200px;
+        transform: none;
+      }
+      .nav-shop.open .nav-shop-dropdown { transform: none; }
+    }
+
+    @media (max-width: 380px) {
+      nav { gap: 10px; }
+      nav a { font-size: 0.54rem; letter-spacing: 0.10em; }
+      .nav-shop-trigger { font-size: 0.54rem; letter-spacing: 0.10em; }
+    }
+
     /* ══════════════════════════════════════════
        PORTRAIT MOBILE  ≤ 640px
     ══════════════════════════════════════════ */
     @media (max-width: 640px) and (orientation: portrait) {
-      header { padding: 10px 16px; }
-      .logo-link img { height: 52px; }
-      nav { gap: 18px; }
-      nav a { font-size: 0.62rem; letter-spacing: 0.18em; }
       .flipbook-section { padding: 12px 6px 24px; }
       .book-wrapper { width: 100%; }
       .flipbook-controls { gap: 12px; margin-top: 16px; }
@@ -465,7 +429,6 @@
     }
     .ls-page img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-    /* Landscape turning leaf */
     .ls-turning-leaf {
       position: absolute; top: 0; bottom: 0;
       width: 50%;
@@ -484,78 +447,41 @@
     .ls-leaf-face img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .ls-leaf-back { transform: rotateY(180deg); }
 
-    /* Landscape sheen overlays (mirrors portrait) */
     .ls-leaf-front::after {
-      content: '';
-      position: absolute; inset: 0;
+      content: ''; position: absolute; inset: 0;
       pointer-events: none;
-      background: linear-gradient(
-        105deg,
-        transparent 30%,
-        rgba(255,255,255,0.55) 50%,
-        transparent 70%
-      );
-      opacity: 0;
-      transform: translateX(-100%);
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+      opacity: 0; transform: translateX(-100%);
     }
     .ls-leaf-front::before {
-      content: '';
-      position: absolute; top: 0; bottom: 0;
-      width: 14px; right: 0;
-      pointer-events: none;
+      content: ''; position: absolute; top: 0; bottom: 0;
+      width: 14px; right: 0; pointer-events: none;
       background: linear-gradient(to right, rgba(0,0,0,0.18), transparent);
       opacity: 0;
     }
     .ls-leaf-back::after {
-      content: '';
-      position: absolute; inset: 0;
+      content: ''; position: absolute; inset: 0;
       pointer-events: none;
-      background: linear-gradient(
-        to right,
-        rgba(0,0,0,0.22) 0%,
-        rgba(0,0,0,0.06) 45%,
-        transparent 100%
-      );
+      background: linear-gradient(to right, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.06) 45%, transparent 100%);
       opacity: 0;
     }
 
-    .ls-turning-leaf.anim-forward {
-      animation: peelForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .ls-turning-leaf.anim-forward .ls-leaf-front::after {
-      animation: sheenForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .ls-turning-leaf.anim-forward .ls-leaf-front::before {
-      animation: edgeForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .ls-turning-leaf.anim-forward .ls-leaf-back::after {
-      animation: backShadowForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-
-    .ls-turning-leaf.anim-backward {
-      animation: peelBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .ls-turning-leaf.anim-backward .ls-leaf-front::after {
-      animation: sheenBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-    .ls-turning-leaf.anim-backward .ls-leaf-front::before {
-      opacity: 0;
-    }
-    .ls-turning-leaf.anim-backward .ls-leaf-back::after {
-      animation: backShadowBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
-    }
-
+    .ls-turning-leaf.anim-forward { animation: peelForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .ls-turning-leaf.anim-forward .ls-leaf-front::after { animation: sheenForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .ls-turning-leaf.anim-forward .ls-leaf-front::before { animation: edgeForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .ls-turning-leaf.anim-forward .ls-leaf-back::after { animation: backShadowForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
     .ls-turning-leaf.anim-backward { animation: peelBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .ls-turning-leaf.anim-backward .ls-leaf-front::after { animation: sheenBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    .ls-turning-leaf.anim-backward .ls-leaf-front::before { opacity: 0; }
+    .ls-turning-leaf.anim-backward .ls-leaf-back::after { animation: backShadowBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
 
-    /* Landscape shop button */
     #ls-shopBtn { top: 6%; left: 2%; }
 
     #landscape-spine {
       position: absolute; left: 50%; top: 0;
       transform: translateX(-50%);
       width: 3px; height: 100%;
-      background: linear-gradient(to right,
-        rgba(0,0,0,0.18), rgba(255,255,255,0.55), rgba(0,0,0,0.12));
+      background: linear-gradient(to right, rgba(0,0,0,0.18), rgba(255,255,255,0.55), rgba(0,0,0,0.12));
       z-index: 10; pointer-events: none;
     }
 
@@ -604,25 +530,6 @@
     }
     body.landscape-active #ls-tap-hint { display: block; }
     #ls-tap-hint.hidden { opacity: 0; }
-
-    @media (max-width: 640px) {
-      .nav-shop-dropdown {
-        left: auto;
-        right: 0;
-        transform: translateY(-6px);
-        min-width: 0;
-        width: 160px;
-      }
-      .nav-shop:hover .nav-shop-dropdown,
-      .nav-shop:focus-within .nav-shop-dropdown {
-        transform: translateY(0);
-      }
-      .nav-shop-dropdown a {
-        font-size: 0.58rem;
-        letter-spacing: 0.12em;
-        padding: 10px 14px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -635,17 +542,23 @@
       <a href="bio.html">Bio</a>
       <a href="resume.html">Resume</a>
       <a href="contact.html">Contact</a>
-      <div class="nav-shop">
-        <button class="nav-shop-trigger" aria-haspopup="true" aria-expanded="false">
+      <div class="nav-shop" id="navShop">
+        <button class="nav-shop-trigger" id="shopTrigger" aria-haspopup="true" aria-expanded="false">
           Shop
           <svg viewBox="0 0 10 6"><polyline points="1,1 5,5 9,1"/></svg>
         </button>
-        <div class="nav-shop-dropdown" role="menu">
-          <a href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer" role="menuitem">Shop My Designs on Redbubble</a>
+        <div class="nav-shop-dropdown" id="shopDropdown" role="menu">
+          <a href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer" role="menuitem">
+            Shop My Designs<br>on Redbubble
+          </a>
         </div>
       </div>
       <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram">
-        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        <svg viewBox="0 0 24 24">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+        </svg>
       </a>
     </nav>
   </header>
@@ -714,6 +627,7 @@
   <div id="ls-tap-hint">swipe or tap edges to turn &nbsp;·&nbsp; tap center for controls</div>
 
   <script>
+    /* ── FLIPBOOK DATA ── */
     const PAGES = [
       'images/Page1.jpg','images/Page2.jpg','images/Page3.jpg','images/Page4.jpg',
       'images/Page5.jpg','images/Page6.jpg','images/Page7.jpg','images/Page8.jpg',
@@ -733,7 +647,7 @@
     const totalSpreads = spreads.length;
     const SHOP_SPREAD  = 15;
 
-    let current  = 0;
+    let current   = 0;
     let animating = false;
     const FLIP_MS = 650;
 
@@ -748,7 +662,7 @@
     const jumpInput    = document.getElementById('pageJumpInput');
     const jumpBtn      = document.getElementById('pageJumpBtn');
     const jumpError    = document.getElementById('pageJumpError');
-    const shopBtn      = document.getElementById('shopBtn');
+    const shopBtnEl    = document.getElementById('shopBtn');
 
     const lsImgLeft      = document.getElementById('ls-imgLeft');
     const lsImgRight     = document.getElementById('ls-imgRight');
@@ -776,8 +690,7 @@
         spreads[adj].forEach(src => {
           if (src && !preloadCache.has(src)) {
             preloadCache.add(src);
-            const img = new Image();
-            img.src = src;
+            const img = new Image(); img.src = src;
           }
         });
       });
@@ -788,7 +701,6 @@
       imgLeft.src  = l || '';
       imgRight.src = r || '';
       imgRight.style.visibility = r ? 'visible' : 'hidden';
-
       lsImgLeft.src  = l || '';
       lsImgRight.src = r || '';
       lsImgRight.style.visibility = r ? 'visible' : 'hidden';
@@ -805,7 +717,7 @@
       lsNextBtn.disabled = index === totalSpreads - 1;
 
       const onShopPage = index === SHOP_SPREAD;
-      shopBtn.classList.toggle('visible', onShopPage);
+      shopBtnEl.classList.toggle('visible', onShopPage);
       lsShopBtn.classList.toggle('visible', onShopPage);
 
       preloadAdjacent(index);
@@ -828,12 +740,6 @@
       leafBackImg.src    = backSrc;
       lsLeafFrontImg.src = frontSrc;
       lsLeafBackImg.src  = backSrc;
-
-      const destImgs = [nxtL, nxtR].filter(Boolean).map(src => {
-        const img = new Image();
-        img.src = src;
-        return img;
-      });
 
       turningLeaf.style.visibility   = 'visible';
       lsTurningLeaf.style.visibility = 'visible';
@@ -868,7 +774,7 @@
       const [curL, curR] = spreads[current];
       const [nxtL, nxtR] = spreads[next];
 
-      shopBtn.classList.remove('visible');
+      shopBtnEl.classList.remove('visible');
       lsShopBtn.classList.remove('visible');
 
       const frontSrc = direction === 'forward' ? (curR || '') : (curL || '');
@@ -988,24 +894,45 @@
 
     window.addEventListener('resize', applyLayout);
     window.addEventListener('orientationchange', () => setTimeout(applyLayout, 150));
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', applyLayout);
-    }
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', applyLayout);
 
     showSpread(0);
     applyLayout();
 
-    // Shop dropdown aria-expanded
-    const shopTrigger = document.querySelector('.nav-shop-trigger');
-    const shopNav = document.querySelector('.nav-shop');
-    if (shopTrigger && shopNav) {
-      shopNav.addEventListener('mouseenter', () => shopTrigger.setAttribute('aria-expanded', 'true'));
-      shopNav.addEventListener('mouseleave', () => shopTrigger.setAttribute('aria-expanded', 'false'));
-      shopNav.addEventListener('focusin',    () => shopTrigger.setAttribute('aria-expanded', 'true'));
-      shopNav.addEventListener('focusout',   (e) => {
-        if (!shopNav.contains(e.relatedTarget)) shopTrigger.setAttribute('aria-expanded', 'false');
-      });
-    }
+    /* ── NAV SHOP DROPDOWN ── */
+    const shopTrigger  = document.getElementById('shopTrigger');
+    const shopDropdown = document.getElementById('shopDropdown');
+    const navShop      = document.getElementById('navShop');
+
+    shopTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = navShop.classList.toggle('open');
+      shopTrigger.setAttribute('aria-expanded', isOpen);
+      if (isOpen && window.innerWidth <= 640) {
+        const rect = shopTrigger.getBoundingClientRect();
+        shopDropdown.style.top = (rect.bottom + 10) + 'px';
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navShop.contains(e.target)) {
+        navShop.classList.remove('open');
+        shopTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    navShop.addEventListener('mouseenter', () => {
+      if (window.innerWidth > 640) {
+        navShop.classList.add('open');
+        shopTrigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+    navShop.addEventListener('mouseleave', () => {
+      if (window.innerWidth > 640) {
+        navShop.classList.remove('open');
+        shopTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
   </script>
 </body>
 </html>
