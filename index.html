@@ -68,6 +68,66 @@
       stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
     }
 
+    /* ── SHOP DROPDOWN ── */
+    .nav-shop {
+      position: relative;
+      display: flex; align-items: center;
+    }
+    .nav-shop-trigger {
+      font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      text-decoration: none; color: var(--grey);
+      position: relative; padding-bottom: 4px;
+      transition: color 0.2s;
+      display: flex; align-items: center; gap: 5px;
+      cursor: pointer; background: none; border: none;
+      font-family: 'Raleway', sans-serif;
+    }
+    .nav-shop-trigger::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; width: 100%; height: 1px;
+      background: var(--pink);
+    }
+    .nav-shop-trigger:hover { color: var(--pink); }
+    .nav-shop-trigger svg {
+      width: 8px; height: 8px; stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      transition: transform 0.2s; flex-shrink: 0;
+      margin-bottom: 4px;
+    }
+    .nav-shop:hover .nav-shop-trigger svg,
+    .nav-shop:focus-within .nav-shop-trigger svg { transform: rotate(180deg); }
+
+    .nav-shop-dropdown {
+      position: absolute;
+      top: calc(100% + 14px);
+      left: 50%; transform: translateX(-50%);
+      background: var(--white);
+      border: 1px solid var(--grey-rule);
+      min-width: 200px;
+      opacity: 0; visibility: hidden;
+      transform: translateX(-50%) translateY(-6px);
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+      z-index: 200;
+    }
+    .nav-shop:hover .nav-shop-dropdown,
+    .nav-shop:focus-within .nav-shop-dropdown {
+      opacity: 1; visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    .nav-shop-dropdown a {
+      display: block;
+      padding: 12px 18px;
+      font-size: 0.65rem; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--grey); text-decoration: none;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+      position: relative;
+    }
+    .nav-shop-dropdown a::after { display: none; }
+    .nav-shop-dropdown a:hover { color: var(--pink); background: var(--off-white); }
+
     /* ── FLIPBOOK SECTION ── */
     .flipbook-section {
       display: flex; flex-direction: column;
@@ -555,6 +615,15 @@
       <a href="bio.html">Bio</a>
       <a href="resume.html">Resume</a>
       <a href="contact.html">Contact</a>
+      <div class="nav-shop">
+        <button class="nav-shop-trigger" aria-haspopup="true" aria-expanded="false">
+          Shop
+          <svg viewBox="0 0 10 6"><polyline points="1,1 5,5 9,1"/></svg>
+        </button>
+        <div class="nav-shop-dropdown" role="menu">
+          <a href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer" role="menuitem">Shop My Designs on Redbubble</a>
+        </div>
+      </div>
       <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram">
         <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
       </a>
@@ -905,6 +974,18 @@
 
     showSpread(0);
     applyLayout();
+
+    // Shop dropdown aria-expanded
+    const shopTrigger = document.querySelector('.nav-shop-trigger');
+    const shopNav = document.querySelector('.nav-shop');
+    if (shopTrigger && shopNav) {
+      shopNav.addEventListener('mouseenter', () => shopTrigger.setAttribute('aria-expanded', 'true'));
+      shopNav.addEventListener('mouseleave', () => shopTrigger.setAttribute('aria-expanded', 'false'));
+      shopNav.addEventListener('focusin',    () => shopTrigger.setAttribute('aria-expanded', 'true'));
+      shopNav.addEventListener('focusout',   (e) => {
+        if (!shopNav.contains(e.relatedTarget)) shopTrigger.setAttribute('aria-expanded', 'false');
+      });
+    }
   </script>
 </body>
 </html>
