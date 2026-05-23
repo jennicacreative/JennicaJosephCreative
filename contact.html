@@ -38,17 +38,26 @@
       padding: 20px 52px;
       border-bottom: 1px solid var(--grey-rule);
       background: var(--white);
+      overflow: visible;
+      position: relative;
+      z-index: 100;
     }
-    .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
+    .logo-link { display: inline-block; text-decoration: none; line-height: 0; flex-shrink: 0; }
     .logo-link img { height: 96px; width: auto; display: block; }
 
-    nav { display: flex; align-items: center; gap: 48px; }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      overflow: visible;
+    }
     nav a {
       font-size: 0.72rem; font-weight: 500;
       letter-spacing: 0.24em; text-transform: uppercase;
       text-decoration: none; color: var(--grey);
       position: relative; padding-bottom: 4px;
       transition: color 0.2s;
+      white-space: nowrap;
     }
     nav a::after {
       content: ''; position: absolute;
@@ -58,11 +67,16 @@
     nav a:hover, nav a.active { color: var(--pink); }
 
     .nav-instagram {
-      text-decoration: none; display: flex; align-items: center;
-      color: var(--pink); line-height: 0; transition: opacity 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      color: var(--pink);
+      line-height: 0;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
     }
     .nav-instagram:hover { opacity: 0.7; }
-    .nav-instagram::after { display: none; }
+    .nav-instagram::after { display: none !important; }
     .nav-instagram svg {
       width: 15px; height: 15px; stroke: currentColor; fill: none;
       stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
@@ -71,7 +85,9 @@
     /* ── SHOP DROPDOWN ── */
     .nav-shop {
       position: relative;
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
     }
     .nav-shop-trigger {
       font-size: 0.72rem; font-weight: 500;
@@ -82,6 +98,7 @@
       display: flex; align-items: center; gap: 5px;
       cursor: pointer; background: none; border: none;
       font-family: 'Raleway', sans-serif;
+      white-space: nowrap;
     }
     .nav-shop-trigger::after {
       content: ''; position: absolute;
@@ -95,41 +112,41 @@
       transition: transform 0.2s; flex-shrink: 0;
       margin-bottom: 4px;
     }
-    .nav-shop:hover .nav-shop-trigger svg,
-    .nav-shop:focus-within .nav-shop-trigger svg { transform: rotate(180deg); }
+    .nav-shop.open .nav-shop-trigger svg,
+    .nav-shop:hover .nav-shop-trigger svg { transform: rotate(180deg); }
 
     .nav-shop-dropdown {
       position: absolute;
       top: calc(100% + 14px);
-      left: 50%; transform: translateX(-50%);
+      right: 0;
       background: var(--white);
       border: 1px solid var(--grey-rule);
-      min-width: 200px;
+      width: 220px;
       opacity: 0; visibility: hidden;
-      transform: translateX(-50%) translateY(-6px);
+      transform: translateY(-6px);
       transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-      z-index: 200;
+      z-index: 9999;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.10);
     }
-    .nav-shop:hover .nav-shop-dropdown,
-    .nav-shop:focus-within .nav-shop-dropdown {
+    .nav-shop.open .nav-shop-dropdown,
+    .nav-shop:hover .nav-shop-dropdown {
       opacity: 1; visibility: visible;
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0);
     }
     .nav-shop-dropdown a {
       display: block;
-      padding: 12px 18px;
+      padding: 14px 18px;
       font-size: 0.65rem; font-weight: 400;
-      letter-spacing: 0.18em; text-transform: uppercase;
+      letter-spacing: 0.15em; text-transform: uppercase;
       color: var(--grey); text-decoration: none;
       transition: color 0.15s, background 0.15s;
       white-space: normal;
-      position: relative;
-      line-height: 1.5;
+      line-height: 1.6;
     }
-    .nav-shop-dropdown a::after { display: none; }
+    .nav-shop-dropdown a::after { display: none !important; }
     .nav-shop-dropdown a:hover { color: var(--pink); background: var(--off-white); }
 
-    /* ── BODY ── */
+    /* ── CONTACT SECTION ── */
     .contact-section {
       display: flex;
       flex-direction: column;
@@ -151,12 +168,9 @@
       text-align: center;
       margin-bottom: 48px;
     }
-
     .contact-note p {
-      font-size: 1.05rem;
-      font-weight: 300;
-      line-height: 1.9;
-      color: var(--pink);
+      font-size: 1.05rem; font-weight: 300;
+      line-height: 1.9; color: var(--pink);
       letter-spacing: 0.02em;
     }
 
@@ -167,31 +181,21 @@
       gap: 20px;
     }
 
-    .form-row {
-      display: flex;
-      gap: 20px;
-    }
+    .form-row { display: flex; gap: 20px; }
 
     .form-field {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      gap: 8px;
+      display: flex; flex-direction: column;
+      flex: 1; gap: 8px;
     }
-
     .form-field label {
-      font-size: 0.62rem;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
+      font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase;
       color: var(--grey-light);
     }
-
     .form-field input,
     .form-field textarea {
       font-family: 'Raleway', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 300;
+      font-size: 0.9rem; font-weight: 300;
       color: var(--grey);
       background: var(--white);
       border: 1px solid var(--grey-rule);
@@ -202,16 +206,9 @@
       border-radius: 0;
       -webkit-appearance: none;
     }
-
     .form-field input:focus,
-    .form-field textarea:focus {
-      border-color: var(--pink);
-    }
-
-    .form-field textarea {
-      resize: vertical;
-      min-height: 140px;
-    }
+    .form-field textarea:focus { border-color: var(--pink); }
+    .form-field textarea { resize: vertical; min-height: 140px; }
 
     .send-btn {
       align-self: center;
@@ -220,55 +217,48 @@
       border: 1px solid var(--pink);
       color: var(--white);
       font-family: 'Raleway', sans-serif;
-      font-size: 0.65rem;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
+      font-size: 0.65rem; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase;
       padding: 12px 48px;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
-
-    .send-btn:hover {
-      background: var(--white);
-      color: var(--pink);
-    }
+    .send-btn:hover { background: var(--white); color: var(--pink); }
 
     .success-msg {
-      display: none;
-      text-align: center;
-      margin-top: 28px;
-      font-size: 0.85rem;
-      font-weight: 300;
-      color: var(--pink);
+      display: none; text-align: center;
+      margin-top: 28px; font-size: 0.85rem;
+      font-weight: 300; color: var(--pink);
       letter-spacing: 0.08em;
     }
 
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      header { padding: 16px 28px; }
+      nav { gap: 28px; }
+    }
+
     @media (max-width: 640px) {
-      header { padding: 14px 20px; }
-      nav { gap: 24px; }
-      .logo-link img { height: 68px; }
+      header { padding: 12px 16px; }
+      .logo-link img { height: 60px; }
+      nav { gap: 16px; flex-wrap: nowrap; }
+      nav a { font-size: 0.60rem; letter-spacing: 0.14em; }
+      .nav-shop-trigger { font-size: 0.60rem; letter-spacing: 0.14em; }
+      .nav-shop-dropdown {
+        position: fixed;
+        right: 12px;
+        width: 200px;
+        transform: none;
+      }
+      .nav-shop.open .nav-shop-dropdown { transform: none; }
       .contact-section { padding: 40px 24px; }
       .form-row { flex-direction: column; gap: 20px; }
     }
 
-    @media (max-width: 640px) {
-      .nav-shop-dropdown {
-        left: auto;
-        right: 0;
-        transform: translateY(-6px);
-        min-width: 0;
-        width: 160px;
-      }
-      .nav-shop:hover .nav-shop-dropdown,
-      .nav-shop:focus-within .nav-shop-dropdown {
-        transform: translateY(0);
-      }
-      .nav-shop-dropdown a {
-        font-size: 0.58rem;
-        letter-spacing: 0.12em;
-        padding: 10px 14px;
-      }
+    @media (max-width: 380px) {
+      nav { gap: 10px; }
+      nav a { font-size: 0.54rem; letter-spacing: 0.10em; }
+      .nav-shop-trigger { font-size: 0.54rem; letter-spacing: 0.10em; }
     }
   </style>
 </head>
@@ -282,17 +272,23 @@
       <a href="bio.html">Bio</a>
       <a href="resume.html">Resume</a>
       <a href="contact.html" class="active">Contact</a>
-      <div class="nav-shop">
-        <button class="nav-shop-trigger" aria-haspopup="true" aria-expanded="false">
+      <div class="nav-shop" id="navShop">
+        <button class="nav-shop-trigger" id="shopTrigger" aria-haspopup="true" aria-expanded="false">
           Shop
           <svg viewBox="0 0 10 6"><polyline points="1,1 5,5 9,1"/></svg>
         </button>
-        <div class="nav-shop-dropdown" role="menu">
-          <a href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer" role="menuitem">Shop My Designs on Redbubble</a>
+        <div class="nav-shop-dropdown" id="shopDropdown" role="menu">
+          <a href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer" role="menuitem">
+            Shop My Designs<br>on Redbubble
+          </a>
         </div>
       </div>
       <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+        </svg>
       </a>
     </nav>
   </header>
@@ -340,15 +336,14 @@
   </section>
 
   <script>
+    // Contact form
     const form = document.getElementById('contactForm');
     const successMsg = document.getElementById('successMsg');
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
       const response = await fetch(form.action, {
-        method: 'POST',
-        body: data,
+        method: 'POST', body: data,
         headers: { 'Accept': 'application/json' }
       });
       if (response.ok) {
@@ -358,16 +353,40 @@
       }
     });
 
-    const shopTrigger = document.querySelector('.nav-shop-trigger');
-    const shopNav = document.querySelector('.nav-shop');
-    if (shopTrigger && shopNav) {
-      shopNav.addEventListener('mouseenter', () => shopTrigger.setAttribute('aria-expanded', 'true'));
-      shopNav.addEventListener('mouseleave', () => shopTrigger.setAttribute('aria-expanded', 'false'));
-      shopNav.addEventListener('focusin',    () => shopTrigger.setAttribute('aria-expanded', 'true'));
-      shopNav.addEventListener('focusout',   (e) => {
-        if (!shopNav.contains(e.relatedTarget)) shopTrigger.setAttribute('aria-expanded', 'false');
-      });
-    }
+    // Shop dropdown
+    const shopTrigger  = document.getElementById('shopTrigger');
+    const shopDropdown = document.getElementById('shopDropdown');
+    const navShop      = document.getElementById('navShop');
+
+    shopTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = navShop.classList.toggle('open');
+      shopTrigger.setAttribute('aria-expanded', isOpen);
+      if (isOpen && window.innerWidth <= 640) {
+        const rect = shopTrigger.getBoundingClientRect();
+        shopDropdown.style.top = (rect.bottom + 10) + 'px';
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navShop.contains(e.target)) {
+        navShop.classList.remove('open');
+        shopTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    navShop.addEventListener('mouseenter', () => {
+      if (window.innerWidth > 640) {
+        navShop.classList.add('open');
+        shopTrigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+    navShop.addEventListener('mouseleave', () => {
+      if (window.innerWidth > 640) {
+        navShop.classList.remove('open');
+        shopTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
   </script>
 
 </body>
