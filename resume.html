@@ -1,87 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jennica Joseph Creative</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      font-size: 0.72rem; font-weight: 500;
-      letter-spacing: 0.24em; text-transform: uppercase;
-      text-decoration: none; color: var(--grey);
-      position: relative; padding-bottom: 4px;
+    :root {
+      --pink: #d76481;
+      --grey: #5a5a5a;
+      --grey-light: #9a9a9a;
+      --grey-rule: #e2e2e2;
+      --white: #ffffff;
+      --off-white: #f9f7f8;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: var(--white);
+      color: var(--grey);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 52px;
+      border-bottom: 1px solid var(--grey-rule);
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      z-index: 100;
+    }
+
+    .logo-link { display: inline-block; text-decoration: none; line-height: 0; }
+    .logo-link img { height: 96px; width: auto; display: block; } 
+
+    nav { display: flex; align-items: center; gap: 48px; }
+
+    nav a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--grey);
+      position: relative;
+      padding-bottom: 4px;
       transition: color 0.2s;
     }
+
     nav a::after {
-      content: ''; position: absolute;
-      bottom: 0; left: 0; width: 100%; height: 1px;
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 1px;
       background: var(--pink);
     }
-    nav a:hover, nav a.active { color: var(--pink); }
+
+    nav a:hover { color: var(--pink); }
+    nav a.active { color: var(--pink); }
 
     .nav-instagram {
-      text-decoration: none; display: flex; align-items: center;
-      color: var(--pink); line-height: 0; transition: opacity 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      color: var(--pink);
+      line-height: 0;
+      transition: opacity 0.2s;
     }
     .nav-instagram:hover { opacity: 0.7; }
     .nav-instagram::after { display: none; }
     .nav-instagram svg {
-      width: 15px; height: 15px; stroke: currentColor; fill: none;
-      stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    /* ── SHOP DROPDOWN ── */
-    .nav-shop {
-      position: relative;
-      display: flex; align-items: center;
-    }
-    .nav-shop-trigger {
-      font-size: 0.72rem; font-weight: 500;
-      letter-spacing: 0.24em; text-transform: uppercase;
-      text-decoration: none; color: var(--grey);
-      position: relative; padding-bottom: 4px;
-      transition: color 0.2s;
-      display: flex; align-items: center; gap: 5px;
-      cursor: pointer; background: none; border: none;
-      font-family: 'Raleway', sans-serif;
-    }
-    .nav-shop-trigger::after {
-      content: ''; position: absolute;
-      bottom: 0; left: 0; width: 100%; height: 1px;
-      background: var(--pink);
-    }
-    .nav-shop-trigger:hover { color: var(--pink); }
-    .nav-shop-trigger svg {
-      width: 8px; height: 8px; stroke: currentColor; fill: none;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-      transition: transform 0.2s; flex-shrink: 0;
-      margin-bottom: 4px;
-    }
-    .nav-shop:hover .nav-shop-trigger svg,
-    .nav-shop:focus-within .nav-shop-trigger svg { transform: rotate(180deg); }
-
-    .nav-shop-dropdown {
-      position: absolute;
-      top: calc(100% + 14px);
-      left: 50%; transform: translateX(-50%);
-      background: var(--white);
-      border: 1px solid var(--grey-rule);
-      min-width: 200px;
-      opacity: 0; visibility: hidden;
-      transform: translateX(-50%) translateY(-6px);
-      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-      z-index: 200;
-    }
-    .nav-shop:hover .nav-shop-dropdown,
-    .nav-shop:focus-within .nav-shop-dropdown {
-      opacity: 1; visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-    .nav-shop-dropdown a {
-      display: block;
-      padding: 12px 18px;
-      font-size: 0.65rem; font-weight: 400;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--grey); text-decoration: none;
-      transition: color 0.15s, background 0.15s;
-      white-space: nowrap;
-      position: relative;
-    }
-    .nav-shop-dropdown a::after { display: none; }
-    .nav-shop-dropdown a:hover { color: var(--pink); background: var(--off-white); }
     /* ── BODY ── */
     .resume-section {
       display: flex;
