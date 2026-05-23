@@ -525,6 +525,59 @@
     }
     body.landscape-active #ls-tap-hint { display: block; }
     #ls-tap-hint.hidden { opacity: 0; }
+
+    /* ── Shop Now overlay button ── */
+    .page-hotspot {
+      position: absolute;
+      z-index: 6;
+      pointer-events: none; /* hidden by default; JS shows it on correct spread */
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .page-hotspot.visible {
+      pointer-events: auto;
+      opacity: 1;
+    }
+    /* Portrait: sits over the LEFT half of the spread, top-left corner */
+    #shopBtn {
+      top: 6%;
+      left: 2%;        /* within the left page half */
+    }
+    /* Landscape: same logic but inside ls-book-stage */
+    #ls-shopBtn {
+      top: 6%;
+      left: 2%;
+    }
+    .shop-now-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--pink);
+      color: #fff;
+      font-family: 'Raleway', sans-serif;
+      font-size: clamp(0.48rem, 1vw, 0.68rem);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.55em 1.1em;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 3px 14px rgba(215,100,129,0.38);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .shop-now-btn:hover {
+      background: #c25470;
+      box-shadow: 0 5px 20px rgba(215,100,129,0.52);
+      transform: translateY(-1px);
+    }
+    .shop-now-btn svg {
+      width: 0.75em; height: 0.75em;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -565,6 +618,13 @@
           </div>
           <!-- Sweep shadow -->
           <div class="shadow-overlay" id="shadowOverlay"></div>
+          <!-- Shop Now overlay — page 31 (left page of spread 15) -->
+          <div class="page-hotspot" id="shopBtn">
+            <a class="shop-now-btn" href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              Shop Now
+            </a>
+          </div>
         </div>
         <div class="spine"></div>
       </div>
@@ -604,6 +664,13 @@
           <div class="ls-leaf-fold-shadow"></div>
         </div>
         <div class="ls-shadow-overlay" id="ls-shadowOverlay"></div>
+        <!-- Shop Now overlay — page 31 landscape -->
+        <div class="page-hotspot" id="ls-shopBtn">
+          <a class="shop-now-btn" href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            Shop Now
+          </a>
+        </div>
       </div>
       <div id="landscape-spine"></div>
     </div>
@@ -679,7 +746,15 @@
       return vvh <= 600 && vvw > vvh;
     }
 
-    function imgSrc(idx) {
+    const shopBtn   = document.getElementById('shopBtn');
+    const lsShopBtn = document.getElementById('ls-shopBtn');
+    const SHOP_SPREAD = 15; // spread index for pages 31-32
+
+    function updateShopBtn(index) {
+      const show = index === SHOP_SPREAD;
+      shopBtn.classList.toggle('visible', show);
+      lsShopBtn.classList.toggle('visible', show);
+    }
       return (idx >= 0 && idx < PAGES.length) ? PAGES[idx] : '';
     }
 
@@ -715,6 +790,8 @@
       nextBtn.disabled   = index === totalSpreads - 1;
       lsPrevBtn.disabled = index === 0;
       lsNextBtn.disabled = index === totalSpreads - 1;
+
+      updateShopBtn(index);
     }
 
     /**
@@ -797,6 +874,10 @@
 
       bookStage.classList.add(cls);
       lsStage.classList.add(cls);
+
+      // Hide shop button during flip
+      shopBtn.classList.remove('visible');
+      lsShopBtn.classList.remove('visible');
 
       // Halfway: update static front to destination (leaf is edge-on, invisible)
       setTimeout(() => {
