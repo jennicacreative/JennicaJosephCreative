@@ -564,6 +564,54 @@
       preloadAdjacent(index);
     }
 
+    function startFlipAnimation(direction, next, frontSrc, backSrc, lsFrontSrc, lsBackSrc) {
+      const [nxtL, nxtR] = spreads[next];
+
+      if (direction === 'forward') {
+        turningLeaf.classList.remove('left-leaf', 'anim-forward', 'anim-backward');
+        lsTurningLeaf.classList.remove('left-leaf', 'anim-forward', 'anim-backward');
+      } else {
+        turningLeaf.classList.add('left-leaf');
+        lsTurningLeaf.classList.add('left-leaf');
+        turningLeaf.classList.remove('anim-forward', 'anim-backward');
+        lsTurningLeaf.classList.remove('anim-forward', 'anim-backward');
+      }
+
+      leafFrontImg.src   = frontSrc;
+      leafBackImg.src    = backSrc;
+      lsLeafFrontImg.src = lsFrontSrc;
+      lsLeafBackImg.src  = lsBackSrc;
+
+      // Pre-load the destination spread images off-screen so the midpoint swap is instant
+      const destImgs = [nxtL, nxtR].filter(Boolean).map(src => {
+        const img = new Image();
+        img.src = src;
+        return img;
+      });
+
+      turningLeaf.style.visibility   = 'visible';
+      lsTurningLeaf.style.visibility = 'visible';
+      turningLeaf.offsetWidth;
+      lsTurningLeaf.offsetWidth;
+
+      const animCls = direction === 'forward' ? 'anim-forward' : 'anim-backward';
+      turningLeaf.classList.add(animCls);
+      lsTurningLeaf.classList.add(animCls);
+
+      setTimeout(() => {
+        current = next;
+        showSpread(current);
+      }, FLIP_MS / 2);
+
+      setTimeout(() => {
+        turningLeaf.style.visibility   = 'hidden';
+        lsTurningLeaf.style.visibility = 'hidden';
+        turningLeaf.classList.remove('anim-forward', 'anim-backward', 'left-leaf');
+        lsTurningLeaf.classList.remove('anim-forward', 'anim-backward', 'left-leaf');
+        animating = false;
+      }, FLIP_MS + 40);
+    }
+
     function flip(direction) {
       if (animating) return;
       if (direction === 'forward'  && current >= totalSpreads - 1) return;
@@ -574,55 +622,38 @@
       const [curL, curR] = spreads[current];
       const [nxtL, nxtR] = spreads[next];
 
-      // Hide shop button during flip
       shopBtn.classList.remove('visible');
       lsShopBtn.classList.remove('visible');
 
-      // Configure leaf
-      if (direction === 'forward') {
-        // Right half peels: front = current right page, back = next left page
-        turningLeaf.classList.remove('left-leaf', 'anim-forward', 'anim-backward');
-        lsTurningLeaf.classList.remove('left-leaf', 'anim-forward', 'anim-backward');
-        leafFrontImg.src   = curR || '';
-        leafBackImg.src    = nxtL || '';
-        lsLeafFrontImg.src = curR || '';
-        lsLeafBackImg.src  = nxtL || '';
-      } else {
-        // Left half peels: front = current left page, back = prev right page
-        turningLeaf.classList.add('left-leaf');
-        lsTurningLeaf.classList.add('left-leaf');
-        turningLeaf.classList.remove('anim-forward', 'anim-backward');
-        lsTurningLeaf.classList.remove('anim-forward', 'anim-backward');
-        leafFrontImg.src   = curL || '';
-        leafBackImg.src    = nxtR || '';
-        lsLeafFrontImg.src = curL || '';
-        lsLeafBackImg.src  = nxtR || '';
+      const frontSrc   = direction === 'forward' ? (curR || '') : (curL || '');
+      const backSrc    = direction === 'forward' ? (nxtL || '') : (nxtR || '');
+
+      // If the back-face image is already cached, start immediately.
+      // Otherwise wait for it to load first so it's ready when the leaf turns over.
+      if (!backSrc) {
+        startFlipAnimation(direction, next, frontSrc, backSrc, frontSrc, backSrc);
+        return;
       }
 
-      // Show leaf and start animation (force reflow first)
-      turningLeaf.style.visibility   = 'visible';
-      lsTurningLeaf.style.visibility = 'visible';
-      turningLeaf.offsetWidth; // reflow
-      lsTurningLeaf.offsetWidth;
+      const probe = new Image();
+      probe.onload = probe.onerror = () => {
+        startFlipAnimation(direction, next, frontSrc, backSrc, frontSrc, backSrc);
+      };
+      // If already cached, onload fires synchronously in most browsers;
+      // set src after handler to be safe
+      probe.src = backSrc;
 
-      const animCls = direction === 'forward' ? 'anim-forward' : 'anim-backward';
-      turningLeaf.classList.add(animCls);
-      lsTurningLeaf.classList.add(animCls);
+      // Safety: if image takes too long, start anyway after a short cap
+      const safety = setTimeout(() => {
+        probe.onload = probe.onerror = null;
+        startFlipAnimation(direction, next, frontSrc, backSrc, frontSrc, backSrc);
+      }, 400);
 
-      // At midpoint (leaf edge-on, invisible): swap underlying pages
-      setTimeout(() => {
-        current = next;
-        showSpread(current);
-      }, FLIP_MS / 2);
-
-      // Done: hide leaf, clean up
-      setTimeout(() => {
-        turningLeaf.style.visibility   = 'hidden';
-        lsTurningLeaf.style.visibility = 'hidden';
-        turningLeaf.classList.remove('anim-forward', 'anim-backward', 'left-leaf');
-        lsTurningLeaf.classList.remove('anim-forward', 'anim-backward', 'left-leaf');
-        animating = false;
-      }, FLIP_MS + 40);
+      probe.onload = probe.onerror = () => {
+        clearTimeout(safety);
+        startFlipAnimation(direction, next, frontSrc, backSrc, frontSrc, backSrc);
+      };
+      probe.src = backSrc;
     }
 
     function jumpToPage(inputEl, errorEl) {
