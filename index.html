@@ -83,7 +83,7 @@
       display: flex; flex-direction: column; align-items: center;
     }
 
-    /* ── SPREAD: natural height driven by images, same as original ── */
+    /* ── SPREAD ── */
     .spread {
       width: 100%;
       display: flex;
@@ -94,7 +94,6 @@
       overflow: hidden;
     }
 
-    /* Two visible page slots — always present, hold the current spread */
     .spread-page {
       width: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -104,22 +103,16 @@
       width: 100%; height: 100%; object-fit: contain; display: block;
     }
 
-    /* ── TURNING LEAF
-       Absolutely overlays one half of the spread.
-       For forward flips: covers the right half, pivots from its left edge.
-       For backward flips: covers the left half, pivots from its right edge.
-    ── */
+    /* ── TURNING LEAF ── */
     .turning-leaf {
       position: absolute;
       top: 0; bottom: 0;
       width: 50%;
       transform-style: preserve-3d;
       z-index: 5;
-      visibility: hidden; /* shown only during animation */
+      visibility: hidden;
     }
-    /* default = right leaf (forward flip) */
     .turning-leaf { left: 50%; transform-origin: left center; }
-    /* left leaf (backward flip) */
     .turning-leaf.left-leaf { left: 0; transform-origin: right center; }
 
     .leaf-face {
@@ -130,16 +123,128 @@
       overflow: hidden; background: var(--white);
     }
     .leaf-face img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    /* Back face starts rotated 180° so it shows when leaf is fully turned */
     .leaf-back { transform: rotateY(180deg); }
 
-    /* Forward: right leaf rotates from 0 → -180 */
+    /* ── PAGE SHEEN OVERLAYS ──
+       These sit above the page image and animate during the flip to simulate
+       light catching a turning page. All pointer-events: none so they don't
+       interfere with anything.
+    ── */
+
+    /* Sheen on the front face — sweeps left-to-right as page lifts */
+    .leaf-front::after {
+      content: '';
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255,255,255,0.55) 50%,
+        transparent 70%
+      );
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+
+    /* Dark edge on the turning side — thin strip that looks like the page edge */
+    .leaf-front::before {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      width: 14px;
+      pointer-events: none;
+      background: linear-gradient(to right, rgba(0,0,0,0.18), transparent);
+      opacity: 0;
+      right: 0;
+    }
+
+    /* Shadow wash on the back face — mimics the underside of a turned page */
+    .leaf-back::after {
+      content: '';
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        to right,
+        rgba(0,0,0,0.22) 0%,
+        rgba(0,0,0,0.06) 45%,
+        transparent 100%
+      );
+      opacity: 0;
+    }
+
+    /* Forward flip animations */
     @keyframes peelForward  { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
-    /* Backward: left leaf rotates from 0 → 180 */
     @keyframes peelBackward { from { transform: rotateY(0deg); } to { transform: rotateY(180deg); } }
 
-    .turning-leaf.anim-forward  { animation: peelForward  0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
-    .turning-leaf.anim-backward { animation: peelBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    /* Sheen sweep — front face brightens then fades as page lifts away */
+    @keyframes sheenForward {
+      0%   { opacity: 0; transform: translateX(-100%); }
+      25%  { opacity: 1; transform: translateX(-20%); }
+      60%  { opacity: 0.7; transform: translateX(40%); }
+      100% { opacity: 0; transform: translateX(150%); }
+    }
+
+    /* Page edge darkens as it lifts (forward) */
+    @keyframes edgeForward {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; }
+      70%  { opacity: 0.6; }
+      100% { opacity: 0; }
+    }
+
+    /* Back-face shadow reveals as page turns over (forward) */
+    @keyframes backShadowForward {
+      0%   { opacity: 0; }
+      50%  { opacity: 0; }
+      65%  { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    /* Reverse versions for backward flip */
+    @keyframes sheenBackward {
+      0%   { opacity: 0; transform: translateX(150%); }
+      25%  { opacity: 1; transform: translateX(40%); }
+      60%  { opacity: 0.7; transform: translateX(-20%); }
+      100% { opacity: 0; transform: translateX(-100%); }
+    }
+    @keyframes edgeBackward {
+      0%   { opacity: 0; right: auto; left: 0;
+             background: linear-gradient(to left, rgba(0,0,0,0.18), transparent); }
+      15%  { opacity: 1; }
+      70%  { opacity: 0.6; }
+      100% { opacity: 0; }
+    }
+    @keyframes backShadowBackward {
+      0%   { opacity: 0; }
+      50%  { opacity: 0; }
+      65%  { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    .turning-leaf.anim-forward {
+      animation: peelForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .turning-leaf.anim-forward .leaf-front::after {
+      animation: sheenForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .turning-leaf.anim-forward .leaf-front::before {
+      animation: edgeForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .turning-leaf.anim-forward .leaf-back::after {
+      animation: backShadowForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+
+    .turning-leaf.anim-backward {
+      animation: peelBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .turning-leaf.anim-backward .leaf-front::after {
+      animation: sheenBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .turning-leaf.anim-backward .leaf-front::before {
+      opacity: 0;
+    }
+    .turning-leaf.anim-backward .leaf-back::after {
+      animation: backShadowBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
 
     /* Spine */
     .spine {
@@ -318,7 +423,67 @@
     .ls-leaf-face img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .ls-leaf-back { transform: rotateY(180deg); }
 
-    .ls-turning-leaf.anim-forward  { animation: peelForward  0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
+    /* Landscape sheen overlays (mirrors portrait) */
+    .ls-leaf-front::after {
+      content: '';
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255,255,255,0.55) 50%,
+        transparent 70%
+      );
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    .ls-leaf-front::before {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      width: 14px; right: 0;
+      pointer-events: none;
+      background: linear-gradient(to right, rgba(0,0,0,0.18), transparent);
+      opacity: 0;
+    }
+    .ls-leaf-back::after {
+      content: '';
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        to right,
+        rgba(0,0,0,0.22) 0%,
+        rgba(0,0,0,0.06) 45%,
+        transparent 100%
+      );
+      opacity: 0;
+    }
+
+    .ls-turning-leaf.anim-forward {
+      animation: peelForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .ls-turning-leaf.anim-forward .ls-leaf-front::after {
+      animation: sheenForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .ls-turning-leaf.anim-forward .ls-leaf-front::before {
+      animation: edgeForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .ls-turning-leaf.anim-forward .ls-leaf-back::after {
+      animation: backShadowForward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+
+    .ls-turning-leaf.anim-backward {
+      animation: peelBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .ls-turning-leaf.anim-backward .ls-leaf-front::after {
+      animation: sheenBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+    .ls-turning-leaf.anim-backward .ls-leaf-front::before {
+      opacity: 0;
+    }
+    .ls-turning-leaf.anim-backward .ls-leaf-back::after {
+      animation: backShadowBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards;
+    }
+
     .ls-turning-leaf.anim-backward { animation: peelBackward 0.65s cubic-bezier(0.645,0.045,0.355,1) forwards; }
 
     /* Landscape shop button */
@@ -399,11 +564,9 @@
   <section class="flipbook-section">
     <div class="book-wrapper">
       <div class="spread" id="spread">
-        <!-- Current spread pages (always visible, updated at midpoint of flip) -->
         <div class="spread-page"><img id="imgLeft"  src="" alt="" /></div>
         <div class="spread-page"><img id="imgRight" src="" alt="" /></div>
 
-        <!-- Turning leaf: overlays one half and peels away -->
         <div class="turning-leaf" id="turningLeaf">
           <div class="leaf-face leaf-front"><img id="leafFrontImg" src="" alt="" /></div>
           <div class="leaf-face leaf-back"><img  id="leafBackImg"  src="" alt="" /></div>
@@ -411,7 +574,6 @@
 
         <div class="spine"></div>
 
-        <!-- Shop Now button — page 31 (left page of spread 15) -->
         <div class="page-hotspot" id="shopBtn">
           <a class="shop-now-btn" href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer">Shop Now</a>
         </div>
@@ -480,13 +642,12 @@
     const spreads = [];
     for (let i = 0; i < PAGES.length; i += 2) spreads.push([PAGES[i], PAGES[i+1] || null]);
     const totalSpreads = spreads.length;
-    const SHOP_SPREAD  = 15; // pages 31-32 → spread index 15
+    const SHOP_SPREAD  = 15;
 
     let current  = 0;
     let animating = false;
     const FLIP_MS = 650;
 
-    // Portrait refs
     const imgLeft      = document.getElementById('imgLeft');
     const imgRight     = document.getElementById('imgRight');
     const turningLeaf  = document.getElementById('turningLeaf');
@@ -500,7 +661,6 @@
     const jumpError    = document.getElementById('pageJumpError');
     const shopBtn      = document.getElementById('shopBtn');
 
-    // Landscape refs
     const lsImgLeft      = document.getElementById('ls-imgLeft');
     const lsImgRight     = document.getElementById('ls-imgRight');
     const lsTurningLeaf  = document.getElementById('ls-turningLeaf');
@@ -519,7 +679,6 @@
       return vvh <= 600 && vvw > vvh;
     }
 
-    // Preload images for adjacent spreads so they're in browser cache before flip
     const preloadCache = new Set();
     function preloadAdjacent(index) {
       [-1, 1].forEach(offset => {
@@ -556,7 +715,6 @@
       lsPrevBtn.disabled = index === 0;
       lsNextBtn.disabled = index === totalSpreads - 1;
 
-      // Show/hide shop button
       const onShopPage = index === SHOP_SPREAD;
       shopBtn.classList.toggle('visible', onShopPage);
       lsShopBtn.classList.toggle('visible', onShopPage);
@@ -564,7 +722,7 @@
       preloadAdjacent(index);
     }
 
-    function startFlipAnimation(direction, next, frontSrc, backSrc, lsFrontSrc, lsBackSrc) {
+    function startFlipAnimation(direction, next, frontSrc, backSrc) {
       const [nxtL, nxtR] = spreads[next];
 
       if (direction === 'forward') {
@@ -579,10 +737,9 @@
 
       leafFrontImg.src   = frontSrc;
       leafBackImg.src    = backSrc;
-      lsLeafFrontImg.src = lsFrontSrc;
-      lsLeafBackImg.src  = lsBackSrc;
+      lsLeafFrontImg.src = frontSrc;
+      lsLeafBackImg.src  = backSrc;
 
-      // Pre-load the destination spread images off-screen so the midpoint swap is instant
       const destImgs = [nxtL, nxtR].filter(Boolean).map(src => {
         const img = new Image();
         img.src = src;
@@ -625,33 +782,23 @@
       shopBtn.classList.remove('visible');
       lsShopBtn.classList.remove('visible');
 
-      const frontSrc   = direction === 'forward' ? (curR || '') : (curL || '');
-      const backSrc    = direction === 'forward' ? (nxtL || '') : (nxtR || '');
+      const frontSrc = direction === 'forward' ? (curR || '') : (curL || '');
+      const backSrc  = direction === 'forward' ? (nxtL || '') : (nxtR || '');
 
-      // If the back-face image is already cached, start immediately.
-      // Otherwise wait for it to load first so it's ready when the leaf turns over.
       if (!backSrc) {
-        startFlipAnimation(direction, next, frontSrc, backSrc, frontSrc, backSrc);
+        startFlipAnimation(direction, next, frontSrc, backSrc);
         return;
       }
 
       const probe = new Image();
-      probe.onload = probe.onerror = () => {
-        startFlipAnimation(direction, next, frontSrc, backSrc, frontSrc, backSrc);
-      };
-      // If already cached, onload fires synchronously in most browsers;
-      // set src after handler to be safe
-      probe.src = backSrc;
-
-      // Safety: if image takes too long, start anyway after a short cap
       const safety = setTimeout(() => {
         probe.onload = probe.onerror = null;
-        startFlipAnimation(direction, next, frontSrc, backSrc, frontSrc, backSrc);
+        startFlipAnimation(direction, next, frontSrc, backSrc);
       }, 400);
 
       probe.onload = probe.onerror = () => {
         clearTimeout(safety);
-        startFlipAnimation(direction, next, frontSrc, backSrc, frontSrc, backSrc);
+        startFlipAnimation(direction, next, frontSrc, backSrc);
       };
       probe.src = backSrc;
     }
@@ -666,7 +813,6 @@
       const targetSpread = Math.floor((raw - 1) / 2);
       if (targetSpread === current) { inputEl.value = ''; return; }
       if (animating) return;
-      // Jump: set current to one before target, then flip
       const dir = targetSpread > current ? 'forward' : 'backward';
       current = targetSpread - (dir === 'forward' ? 1 : -1);
       showSpread(current);
@@ -674,7 +820,6 @@
       inputEl.value = '';
     }
 
-    // ── Landscape controls auto-hide ──
     let hideTimer = null;
     function lsEls() { return [lsPrevBtn, lsNextBtn, lsCounter]; }
     function showControls() {
@@ -688,7 +833,6 @@
       lsTapHint.classList.remove('hidden');
     }
 
-    // ── Swipe + zone-tap ──
     const SWIPE_THRESHOLD = 40;
     let touchStartX = null, touchStartY = null, didSwipe = false;
 
@@ -727,7 +871,6 @@
       }
     }, { passive: true });
 
-    // ── Layout switch ──
     function applyLayout() {
       if (isLandscapeMobile()) {
         document.body.classList.add('landscape-active');
@@ -740,7 +883,6 @@
       }
     }
 
-    // ── Wiring ──
     prevBtn.addEventListener('click', () => flip('backward'));
     nextBtn.addEventListener('click', () => flip('forward'));
     jumpBtn.addEventListener('click', () => jumpToPage(jumpInput, jumpError));
