@@ -127,13 +127,14 @@
     }
     .nav-shop-dropdown a::after { display: none; }
     .nav-shop-dropdown a:hover { color: var(--pink); background: var(--off-white); }
+
     /* ── BODY ── */
     .contact-section {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: calc(100vh - 137px); 
+      min-height: calc(100vh - 137px);
       padding: 72px 40px;
       background: var(--off-white);
     }
@@ -157,7 +158,6 @@
       color: var(--pink);
       letter-spacing: 0.02em;
     }
-
 
     .contact-form {
       width: 100%;
@@ -212,7 +212,6 @@
       min-height: 140px;
     }
 
-  
     .send-btn {
       align-self: center;
       margin-top: 8px;
@@ -234,7 +233,6 @@
       color: var(--pink);
     }
 
-   
     .success-msg {
       display: none;
       text-align: center;
@@ -248,7 +246,7 @@
     @media (max-width: 640px) {
       header { padding: 14px 20px; }
       nav { gap: 24px; }
-      .logo-link img { height: 68px; } 
+      .logo-link img { height: 68px; }
       .contact-section { padding: 40px 24px; }
       .form-row { flex-direction: column; gap: 20px; }
     }
@@ -264,6 +262,15 @@
       <a href="bio.html">Bio</a>
       <a href="resume.html">Resume</a>
       <a href="contact.html" class="active">Contact</a>
+      <div class="nav-shop">
+        <button class="nav-shop-trigger" aria-haspopup="true" aria-expanded="false">
+          Shop
+          <svg viewBox="0 0 10 6"><polyline points="1,1 5,5 9,1"/></svg>
+        </button>
+        <div class="nav-shop-dropdown" role="menu">
+          <a href="http://www.redbubble.com/people/jennicajoseph" target="_blank" rel="noopener noreferrer" role="menuitem">Shop My Designs on Redbubble</a>
+        </div>
+      </div>
       <a href="https://www.instagram.com/jennicajosephcreative" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Instagram">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
       </a>
@@ -330,6 +337,17 @@
         successMsg.style.display = 'block';
       }
     });
+
+    const shopTrigger = document.querySelector('.nav-shop-trigger');
+    const shopNav = document.querySelector('.nav-shop');
+    if (shopTrigger && shopNav) {
+      shopNav.addEventListener('mouseenter', () => shopTrigger.setAttribute('aria-expanded', 'true'));
+      shopNav.addEventListener('mouseleave', () => shopTrigger.setAttribute('aria-expanded', 'false'));
+      shopNav.addEventListener('focusin',    () => shopTrigger.setAttribute('aria-expanded', 'true'));
+      shopNav.addEventListener('focusout',   (e) => {
+        if (!shopNav.contains(e.relatedTarget)) shopTrigger.setAttribute('aria-expanded', 'false');
+      });
+    }
   </script>
 
 </body>
