@@ -82,7 +82,7 @@
       stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
     }
 
-    /* ── SHOP DROPDOWN ── */
+   
     .nav-shop {
       position: relative;
       display: flex;
@@ -146,7 +146,7 @@
     .nav-shop-dropdown a::after { display: none !important; }
     .nav-shop-dropdown a:hover { color: var(--pink); background: var(--off-white); }
 
-    /* ── FLIPBOOK SECTION ── */
+    /* ── BODY ── */
     .flipbook-section {
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
@@ -161,7 +161,7 @@
       display: flex; flex-direction: column; align-items: center;
     }
 
-    /* ── SPREAD ── */
+    
     .spread {
       width: 100%;
       display: flex;
@@ -179,7 +179,7 @@
     }
     .spread-page img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-    /* ── TURNING LEAF ── */
+    
     .turning-leaf {
       position: absolute; top: 0; bottom: 0;
       width: 50%;
@@ -264,7 +264,7 @@
       z-index: 10; pointer-events: none;
     }
 
-    /* ── Shop Now overlay ── */
+  
     .page-hotspot {
       position: absolute; z-index: 6;
       pointer-events: none; opacity: 0;
@@ -291,7 +291,7 @@
       transform: translateY(-1px);
     }
 
-    /* ── CONTROLS ── */
+    
     .flipbook-controls {
       display: flex; align-items: center; justify-content: center;
       gap: 28px; margin-top: 36px;
@@ -312,7 +312,7 @@
       text-align: center; letter-spacing: 0.12em;
     }
 
-    /* ── PAGE JUMP ── */
+    
     .page-jump {
       display: flex; flex-direction: column; align-items: center;
       gap: 5px; margin-top: 10px; opacity: 0.65; transition: opacity 0.2s;
@@ -345,7 +345,7 @@
       margin-top: 4px; min-height: 1em; text-align: center;
     }
 
-    /* ── Shop Now button — smaller on mobile ── */
+   
     @media (max-width: 640px) {
       .shop-now-btn {
         font-size: 0.24rem;
@@ -356,7 +356,7 @@
       }
     }
 
-    /* ── RESPONSIVE NAV ── */
+   
     @media (max-width: 860px) {
       header { padding: 16px 28px; }
       nav { gap: 28px; }
@@ -383,9 +383,7 @@
       .nav-shop-trigger { font-size: 0.54rem; letter-spacing: 0.10em; }
     }
 
-    /* ══════════════════════════════════════════
-       PORTRAIT MOBILE  ≤ 640px
-    ══════════════════════════════════════════ */
+
     @media (max-width: 640px) and (orientation: portrait) {
       .page-jump, .page-jump-error { display: none; }
       .flipbook-section { padding: 12px 6px 24px; }
@@ -412,9 +410,7 @@
       .page-jump { margin-top: 8px; }
     }
 
-    /* ══════════════════════════════════════════
-       LANDSCAPE FULLSCREEN VIEWER
-    ══════════════════════════════════════════ */
+   
     body.landscape-active > header,
     body.landscape-active > .flipbook-section { display: none; }
 
@@ -610,7 +606,7 @@
     </div>
   </section>
 
-  <!-- Landscape fullscreen viewer -->
+ 
   <div id="landscape-viewer">
     <div id="landscape-spread">
       <div class="ls-page"><img id="ls-imgLeft"  src="" alt="" /></div>
@@ -639,7 +635,7 @@
   <div id="ls-tap-hint">swipe or tap edges to turn &nbsp;·&nbsp; tap center for controls</div>
 
   <script>
-    /* ── FLIPBOOK DATA ── */
+   
     const PAGES = [
       'images/Page1.jpg','images/Page2.jpg','images/Page3.jpg','images/Page4.jpg',
       'images/Page5.jpg','images/Page6.jpg','images/Page7.jpg','images/Page8.jpg',
@@ -911,7 +907,7 @@
     showSpread(0);
     applyLayout();
 
-    /* ── NAV SHOP DROPDOWN ── */
+    
     const shopTrigger  = document.getElementById('shopTrigger');
     const shopDropdown = document.getElementById('shopDropdown');
     const navShop      = document.getElementById('navShop');
